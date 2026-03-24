@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, LogOut, X } from 'lucide-react';
+import { LayoutDashboard, FileText, Calendar, LogOut, X } from 'lucide-react';
 
 export default function AdminSidebar({ mobileOpen, onClose }) {
   const navigate = useNavigate();
@@ -29,6 +29,7 @@ export default function AdminSidebar({ mobileOpen, onClose }) {
         {[
           { to: '/admin/dashboard', label: 'Dashboard',   icon: <LayoutDashboard size={18} /> },
           { to: '/admin/notices',   label: 'Notices',      icon: <FileText size={18} />      },
+          { to: '/admin/events',    label: 'Events',       icon: <Calendar size={18} />      },
         ].map(({ to, label, icon }) => (
           <NavLink
             key={to}

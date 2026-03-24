@@ -1,43 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../services/api';
+import { getEvents } from '../services/eventService';
 import EventCard from '../components/EventCard';
-import { Link } from 'react-router-dom';
 
 export default function Events() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const currentUserId = 'student_001';
 
   useEffect(() => { fetchEvents(); }, []);
 
   const fetchEvents = async () => {
     try {
-      const res = await api.getEvents();
+      const res = await getEvents();
       if (res?.success) setEvents(res.data);
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
-  };
-
-  const handleRegister = async (eventId) => {
-    try {
-      const res = await api.registerEvent(eventId, currentUserId);
-      if (res?.success) {
-        setEvents(events.map(ev => ev.id === eventId
-          ? { ...ev, registeredUsers: [...(ev.registeredUsers || []), currentUserId] }
-          : ev
-        ));
-      } else alert(res?.message || 'Registration failed');
-    } catch { alert('Error registering for event'); }
-  };
-
-  const handleDelete = async (eventId) => {
-    if (!window.confirm('Delete this event?')) return;
-    try {
-      const res = await api.deleteEvent(eventId);
-      if (res?.success) setEvents(events.filter(ev => ev.id !== eventId));
-      else alert(res?.message || 'Delete failed');
-    } catch { alert('Error deleting event'); }
   };
 
   if (loading) return (
@@ -56,21 +32,6 @@ export default function Events() {
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1, letterSpacing: '-0.03em' }}>
             Events
           </h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', cursor: 'pointer', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              <input type="checkbox" checked={isAdmin} onChange={() => setIsAdmin(!isAdmin)} style={{ accentColor: 'var(--accent)' }} />
-              Admin Mode
-            </label>
-            {isAdmin && (
-              <Link to="/events/create" style={{
-                padding: '10px 20px', background: 'var(--text-primary)', color: 'var(--text-invert)',
-                border: '2px solid var(--border-dark)', fontSize: 12, fontWeight: 700,
-                letterSpacing: '0.08em', textTransform: 'uppercase', display: 'inline-block',
-              }}>
-                + Create Event
-              </Link>
-            )}
-          </div>
         </div>
       </div>
 
@@ -81,7 +42,7 @@ export default function Events() {
       ) : (
         <div className="event-grid">
           {events.map(event => (
-            <EventCard key={event.id} event={event} onRegister={handleRegister} onDelete={handleDelete} isAdmin={isAdmin} />
+            <EventCard key={event.id} event={event} isAdmin={false} />
           ))}
         </div>
       )}

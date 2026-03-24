@@ -2245,7 +2245,7 @@ var notices = [
 ];
 var nextCommentId = 10;
 var getAllNotices = /* @__PURE__ */ __name(() => notices, "getAllNotices");
-var getNoticeById = /* @__PURE__ */ __name((id) => notices.find((n) => n.id === parseInt(id)), "getNoticeById");
+var getNoticeById = /* @__PURE__ */ __name((id) => notices.find((n) => String(n.id) === String(id)), "getNoticeById");
 var addComment = /* @__PURE__ */ __name((noticeId, { user, text }) => {
   const notice = getNoticeById(noticeId);
   if (!notice)
@@ -2263,7 +2263,7 @@ var addComment = /* @__PURE__ */ __name((noticeId, { user, text }) => {
 var nextNoticeId = 6;
 var createNotice = /* @__PURE__ */ __name((data) => {
   const newNotice = {
-    id: nextNoticeId++,
+    id: (nextNoticeId++).toString(),
     title: data.title || "Untitled",
     category: data.category || "General",
     priority: data.priority || "medium",
@@ -2276,19 +2276,19 @@ var createNotice = /* @__PURE__ */ __name((data) => {
   return newNotice;
 }, "createNotice");
 var updateNotice = /* @__PURE__ */ __name((id, data) => {
-  const noticeIndex = notices.findIndex((n) => n.id === parseInt(id));
+  const noticeIndex = notices.findIndex((n) => String(n.id) === String(id));
   if (noticeIndex === -1)
     return null;
   notices[noticeIndex] = {
     ...notices[noticeIndex],
     ...data,
-    id: parseInt(id)
+    id: String(id)
     // Ensure ID doesn't change
   };
   return notices[noticeIndex];
 }, "updateNotice");
 var deleteNotice = /* @__PURE__ */ __name((id) => {
-  const noticeIndex = notices.findIndex((n) => n.id === parseInt(id));
+  const noticeIndex = notices.findIndex((n) => String(n.id) === String(id));
   if (noticeIndex === -1)
     return false;
   notices.splice(noticeIndex, 1);
@@ -2475,105 +2475,57 @@ auth.post("/logout", (c) => {
 var auth_default = auth;
 
 // src/services/userService.js
-var users = [
-  {
-    id: "student_001",
-    name: "Aarav Singh",
-    email: "aarav.singh@college.edu",
-    rollNo: "CS22B001",
-    branch: "Computer Science & Engineering",
-    year: "3rd Year",
-    semester: "6th Semester",
-    phone: "+91 98765 43210",
-    avatar: "AS",
-    cgpa: 8.9,
-    credits: 134,
-    registeredEvents: [1, 2]
-  }
-];
 var notifications = [
   {
-    id: 1,
+    id: "1",
     type: "notice",
     title: "New Notice: Exam Schedule Released",
     message: "The end semester examination schedule has been released. Click to view.",
     timestamp: "2026-03-20T09:00:00Z",
-    read: false,
     link: "/notices/1"
   },
   {
-    id: 2,
+    id: "2",
     type: "event",
     title: "Event Registration Confirmed",
     message: "You are registered for Annual Tech Fest 2026 - TechZen.",
     timestamp: "2026-03-19T14:30:00Z",
-    read: false,
     link: "/events/1"
   },
   {
-    id: 3,
+    id: "3",
     type: "alert",
     title: "Scholarship Deadline Extended",
     message: "The scholarship application deadline has been extended to April 15th.",
     timestamp: "2026-03-15T10:00:00Z",
-    read: true,
     link: "/notices/3"
   },
   {
-    id: 4,
+    id: "4",
     type: "event",
     title: "Reminder: Career Seminar Tomorrow",
     message: "Don't forget \u2014 Career Guidance Seminar is tomorrow at 2 PM in Seminar Hall B.",
     timestamp: "2026-03-14T08:00:00Z",
-    read: true,
     link: "/events/2"
   },
   {
-    id: 5,
+    id: "5",
     type: "system",
     title: "Profile Updated Successfully",
     message: "Your contact information was updated successfully.",
     timestamp: "2026-03-12T16:00:00Z",
-    read: true,
-    link: "/profile"
+    link: "/dashboard"
   }
 ];
-var getUserProfile = /* @__PURE__ */ __name((userId) => users.find((u) => u.id === userId) || users[0], "getUserProfile");
-var getNotifications = /* @__PURE__ */ __name((userId) => notifications, "getNotifications");
-var markAsRead = /* @__PURE__ */ __name((notifId) => {
-  const notif = notifications.find((n) => n.id === parseInt(notifId));
-  if (notif)
-    notif.read = true;
-  return notif;
-}, "markAsRead");
-var markAllAsRead = /* @__PURE__ */ __name(() => {
-  notifications.forEach((n) => n.read = true);
-  return { success: true };
-}, "markAllAsRead");
-var getUnreadCount = /* @__PURE__ */ __name(() => notifications.filter((n) => !n.read).length, "getUnreadCount");
+var getNotifications = /* @__PURE__ */ __name(() => notifications, "getNotifications");
 
 // src/routes/users.js
-var users2 = new Hono2();
-users2.get("/profile", (c) => {
-  const profile = getUserProfile("student_001");
-  return c.json({ success: true, data: profile });
+var users = new Hono2();
+users.get("/notifications", (c) => {
+  const notifications2 = getNotifications();
+  return c.json({ success: true, data: notifications2 });
 });
-users2.get("/notifications", (c) => {
-  const notifications2 = getNotifications("student_001");
-  const unreadCount = getUnreadCount();
-  return c.json({ success: true, data: notifications2, unreadCount });
-});
-users2.patch("/notifications/:id/read", (c) => {
-  const notif = markAsRead(c.req.param("id"));
-  if (!notif)
-    return c.json({ success: false, message: "Notification not found" }, 404);
-  return c.json({ success: true, data: notif });
-});
-users2.patch("/notifications/read-all", (c) => {
-  markAllAsRead();
-  return c.json({ success: true, message: "All notifications marked as read" });
-});
-var users_default = users2;
+var users_default = users;
 
 // src/routes/admin.js
 var admin = new Hono2();

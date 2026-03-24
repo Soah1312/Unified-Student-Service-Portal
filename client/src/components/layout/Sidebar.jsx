@@ -7,7 +7,6 @@ const navItems = [
   { path: '/notices',       label: 'Notices',       icon: <Megaphone size={18} />,       section: 'II.' },
   { path: '/events',        label: 'Events',        icon: <Calendar size={18} />,        section: 'III.' },
   { path: '/notifications', label: 'Notifications', icon: <Bell size={18} />,            section: 'IV.' },
-  { path: '/profile',       label: 'Profile',       icon: <User size={18} />,            section: 'V.' },
 ];
 
 import { X } from 'lucide-react';

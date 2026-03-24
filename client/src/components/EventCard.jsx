@@ -1,10 +1,6 @@
 import React from 'react';
 
-const EventCard = ({ event, onRegister, onDelete, isAdmin }) => {
-  const seatsLeft = event.seats - (event.registeredUsers?.length || 0);
-  const isFull = seatsLeft <= 0;
-  const isRegistered = event.registeredUsers?.includes('student_001');
-
+const EventCard = ({ event, onDelete, isAdmin }) => {
   const dateObj = new Date(event.date);
   const dayStr = dateObj.toLocaleDateString('en-US', { day: '2-digit' });
   const monStr = dateObj.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
@@ -53,47 +49,10 @@ const EventCard = ({ event, onRegister, onDelete, isAdmin }) => {
         <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7, flex: 1 }}>
           {event.description}
         </p>
-
-        {/* Seats bar */}
-        <div style={{ marginTop: 8 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-            <span className="editorial-label">{seatsLeft} seats left</span>
-            <span className="editorial-label">{event.seats} total</span>
-          </div>
-          <div style={{ height: 3, background: 'var(--bg-secondary)', position: 'relative' }}>
-            <div style={{
-              position: 'absolute', top: 0, left: 0, height: '100%',
-              width: `${Math.max(0, (seatsLeft / event.seats) * 100)}%`,
-              background: isFull ? 'var(--accent)' : 'var(--text-primary)',
-              transition: 'width 0.4s ease',
-            }} />
-          </div>
-        </div>
       </div>
 
       {/* Footer / Action */}
       <div style={{ padding: '12px 20px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'flex-end' }}>
-        {!isAdmin && (
-          <button
-            disabled={isFull || isRegistered}
-            onClick={() => onRegister(event.id)}
-            style={{
-              padding: '10px 24px',
-              background: isRegistered ? 'transparent' : isFull ? 'var(--bg-secondary)' : 'var(--text-primary)',
-              color: isRegistered ? 'var(--text-secondary)' : isFull ? 'var(--text-muted)' : 'var(--text-invert)',
-              border: isRegistered ? '1.5px solid var(--border)' : '1.5px solid var(--border-dark)',
-              fontFamily: 'var(--font-ui)', fontSize: 12, fontWeight: 700,
-              letterSpacing: '0.08em', textTransform: 'uppercase',
-              cursor: (isFull || isRegistered) ? 'not-allowed' : 'pointer',
-              transition: 'all 0.2s',
-              opacity: (isFull || isRegistered) ? 0.7 : 1,
-            }}
-            onMouseEnter={e => { if (!isFull && !isRegistered) { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent)'; } }}
-            onMouseLeave={e => { if (!isFull && !isRegistered) { e.currentTarget.style.background = 'var(--text-primary)'; e.currentTarget.style.borderColor = 'var(--border-dark)'; } }}
-          >
-            {isRegistered ? '✓ Registered' : isFull ? 'Fully Booked' : 'Register →'}
-          </button>
-        )}
         {isAdmin && (
           <button
             onClick={() => onDelete(event.id)}

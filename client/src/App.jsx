@@ -8,13 +8,13 @@ import Notices from './pages/Notices';
 import Events from './pages/Events';
 import CreateEvent from './pages/CreateEvent';
 import Notifications from './pages/Notifications';
-import Profile from './pages/Profile';
 
 // Admin layout and pages
 import AdminLayout from './components/layout/AdminLayout';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminNotices from './pages/AdminNotices';
+import AdminEvents from './pages/AdminEvents';
 import CreateNotice from './pages/CreateNotice';
 
 export default function App() {
@@ -30,7 +30,7 @@ export default function App() {
         <Route path="/events" element={<Events />} />
         <Route path="/events/create" element={<CreateEvent />} />
         <Route path="/notifications" element={<Notifications />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/notifications" element={<Notifications />} />
 
         <Route path="*" element={
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', fontFamily: 'var(--font-display)', gap: 8 }}>
@@ -47,6 +47,8 @@ export default function App() {
         <Route path="notices" element={<AdminNotices />} />
         <Route path="notices/create" element={<CreateNotice />} />
         <Route path="notices/edit/:id" element={<CreateNotice />} />
+        <Route path="events" element={<AdminEvents />} />
+        <Route path="events/create" element={<CreateEvent />} />
       </Route>
     </Routes>
   );

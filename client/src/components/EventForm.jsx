@@ -8,7 +8,6 @@ const EventForm = ({ onSubmit, onCancel }) => {
     date: '',
     time: '',
     location: '',
-    seats: ''
   });
 
   const handleChange = (e) => {
@@ -18,10 +17,7 @@ const EventForm = ({ onSubmit, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({
-      ...formData,
-      seats: parseInt(formData.seats, 10) || 0
-    });
+    onSubmit(formData);
   };
 
   const fieldStyle = { display: 'flex', flexDirection: 'column', gap: 6 };
@@ -80,33 +76,17 @@ const EventForm = ({ onSubmit, onCancel }) => {
         </div>
       </div>
 
-      <div className="form-row-2">
-        <div style={fieldStyle}>
-          <label className="editorial-label-field">Location</label>
-          <input 
-            type="text" 
-            name="location" 
-            required 
-            value={formData.location} 
-            onChange={handleChange}
-            className="editorial-input"
-            placeholder="e.g. Main Auditorium"
-          />
-        </div>
-        
-        <div style={fieldStyle}>
-          <label className="editorial-label-field">Total Seats</label>
-          <input 
-            type="number" 
-            name="seats" 
-            required 
-            min="1"
-            value={formData.seats} 
-            onChange={handleChange}
-            className="editorial-input"
-            placeholder="e.g. 150"
-          />
-        </div>
+      <div style={fieldStyle}>
+        <label className="editorial-label-field">Location</label>
+        <input 
+          type="text" 
+          name="location" 
+          required 
+          value={formData.location} 
+          onChange={handleChange}
+          className="editorial-input"
+          placeholder="e.g. Main Auditorium"
+        />
       </div>
 
       <hr className="editorial-rule" />

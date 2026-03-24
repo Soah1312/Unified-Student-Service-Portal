@@ -5,7 +5,6 @@ export default function NoticeForm({ initialData, onSubmit, onCancel, isSubmitti
   const [formData, setFormData] = useState({
     title:    initialData?.title    || '',
     category: initialData?.category || 'Academic',
-    priority: initialData?.priority || 'medium',
     content:  initialData?.content  || '',
   });
 
@@ -31,34 +30,19 @@ export default function NoticeForm({ initialData, onSubmit, onCancel, isSubmitti
         />
       </div>
 
-      {/* Category + Priority row */}
-      <div className="form-row-2">
-        <div style={fieldStyle}>
-          <label className="editorial-label-field">Category</label>
-          <select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            className="editorial-input"
-          >
-            {['Academic', 'Facilities', 'Finance', 'Infrastructure', 'Administration'].map(c => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
-        </div>
-        <div style={fieldStyle}>
-          <label className="editorial-label-field">Priority</label>
-          <select
-            name="priority"
-            value={formData.priority}
-            onChange={handleChange}
-            className="editorial-input"
-          >
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
-          </select>
-        </div>
+      {/* Category */}
+      <div style={fieldStyle}>
+        <label className="editorial-label-field">Category</label>
+        <select
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          className="editorial-input"
+        >
+          {['Academic', 'Facilities', 'Finance', 'Infrastructure', 'Administration'].map(c => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
       </div>
 
       {/* Content */}
@@ -76,14 +60,6 @@ export default function NoticeForm({ initialData, onSubmit, onCancel, isSubmitti
         />
       </div>
 
-      {/* Priority indicator */}
-      {formData.priority === 'high' && (
-        <div style={{ padding: '10px 14px', borderLeft: '3px solid var(--accent)', background: 'rgba(255,51,51,0.04)', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 12, color: 'var(--accent)', fontFamily: 'var(--font-ui)', fontWeight: 600 }}>
-            HIGH PRIORITY — This notice will be highlighted in bold red across all views.
-          </span>
-        </div>
-      )}
 
       <hr className="editorial-rule" />
 

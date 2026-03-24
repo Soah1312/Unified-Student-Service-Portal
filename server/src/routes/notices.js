@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 import { getAllNotices, getNoticeById, addComment, createNotice, updateNotice, deleteNotice } from '../services/noticeService.js'
+import { addNotification } from '../services/userService.js'
 
 const notices = new Hono()
 
@@ -24,6 +25,15 @@ notices.post('/', async (c) => {
       return c.json({ success: false, message: "Title and content are required" }, 400);
     }
     const newNotice = createNotice(data);
+    
+    // Sync to notifications here (Route level)
+    addNotification({
+      type: 'notice',
+      title: `New Notice: ${newNotice.title}`,
+      message: newNotice.content.substring(0, 100) + '...',
+      link: `/notices`
+    });
+
     return c.json({ success: true, data: newNotice }, 201);
   } catch (e) {
     return c.json({ success: false, message: "Invalid JSON body" }, 400);

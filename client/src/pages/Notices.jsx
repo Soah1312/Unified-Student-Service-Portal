@@ -21,7 +21,7 @@ export default function Notices() {
 
   const handleAddComment = async (text) => {
     if (!selectedNotice) return;
-    const res = await api.addComment(selectedNotice.id, 'Aarav Singh', text);
+    const res = await api.addComment(selectedNotice.id, 'Student', text);
     if (res?.success) {
       const updated = { ...selectedNotice, comments: [...selectedNotice.comments, res.data] };
       setSelectedNotice(updated);
@@ -88,7 +88,7 @@ export default function Notices() {
                 display: 'flex', gap: 16, justifyContent: 'space-between', alignItems: 'flex-start',
                 padding: '20px 24px',
                 borderBottom: i < filtered.length - 1 ? '1px solid var(--border)' : 'none',
-                borderLeft: notice.priority === 'high' ? '3px solid var(--accent)' : '3px solid transparent',
+                borderLeft: '3px solid transparent',
                 background: 'var(--bg-card)', cursor: 'pointer',
                 transition: 'background 0.15s',
               }}
@@ -97,7 +97,7 @@ export default function Notices() {
             >
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                  <Badge variant={notice.priority === 'high' ? 'danger' : notice.priority === 'medium' ? 'warning' : 'default'}>{notice.category}</Badge>
+                  <Badge>{notice.category}</Badge>
                   <span className="editorial-label">{notice.date} · By {notice.author}</span>
                 </div>
                 <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em', lineHeight: 1.2, marginBottom: 6 }}>
@@ -124,12 +124,7 @@ export default function Notices() {
               {selectedNotice.title}
             </h2>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid var(--border)' }}>
-              <span className="editorial-label">By {selectedNotice.author}</span>
-              <span style={{ color: 'var(--border)' }}>·</span>
               <span className="editorial-label">{selectedNotice.date}</span>
-              <Badge variant={selectedNotice.priority === 'high' ? 'danger' : selectedNotice.priority === 'medium' ? 'warning' : 'default'}>
-                {selectedNotice.priority}
-              </Badge>
             </div>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: 15, lineHeight: 1.85, color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
               {selectedNotice.content}

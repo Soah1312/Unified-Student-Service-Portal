@@ -1,9 +1,24 @@
 import React from 'react';
 import { Bell, User, Menu } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { userService } from '../../services/userService';
 
 export default function Navbar({ onMenuToggle }) {
-  const unreadCount = 2;
+  const [unreadCount, setUnreadCount] = React.useState(0);
+  
+  React.useEffect(() => {
+    const checkNotifications = async () => {
+      const res = await userService.getNotifications();
+      if (res?.success) {
+        setUnreadCount(res.data.filter(n => !n.read).length);
+      }
+    };
+    checkNotifications();
+    // Refresh occasionally or on storage event
+    window.addEventListener('storage', checkNotifications);
+    return () => window.removeEventListener('storage', checkNotifications);
+  }, []);
+
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 
   return (
@@ -73,26 +88,6 @@ export default function Navbar({ onMenuToggle }) {
                 {unreadCount}
               </span>
             )}
-          </Link>
-
-          <div style={{ width: 1, height: 24, background: 'rgba(245,245,240,0.12)', margin: '0 8px' }} />
-
-          <Link
-            to="/profile"
-            style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 10px', transition: 'background 0.2s' }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(245,245,240,0.06)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-          >
-            <div style={{
-              width: 32, height: 32, background: 'var(--accent)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: 12, color: '#fff',
-            }}>
-              AS
-            </div>
-            <span style={{ fontFamily: 'var(--font-ui)', fontSize: 13, fontWeight: 600, color: 'rgba(245,245,240,0.8)' }}>
-              Aarav Singh
-            </span>
           </Link>
         </div>
       </div>

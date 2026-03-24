@@ -3,23 +3,21 @@ import { Edit2, Trash2 } from 'lucide-react';
 import Badge from './ui/Badge';
 
 export default function NoticeCard({ notice, onEdit, onDelete }) {
-  const priorityVariant = notice.priority === 'high' ? 'danger' : notice.priority === 'medium' ? 'warning' : 'default';
 
   return (
     <div style={{
       background: 'var(--bg)',
       border: '1px solid var(--border)',
-      borderTop: notice.priority === 'high' ? '3px solid var(--accent)' : '1px solid var(--border)',
       padding: '24px',
       transition: 'border-color 0.2s',
     }}
       onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-dark)'}
-      onMouseLeave={e => e.currentTarget.style.borderColor = notice.priority === 'high' ? 'var(--accent)' : 'var(--border)'}
+      onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, marginBottom: 16 }}>
         <div style={{ flex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-            <Badge variant={priorityVariant}>{notice.category}</Badge>
+            <Badge>{notice.category}</Badge>
             <span className="editorial-label">{notice.date}</span>
           </div>
           <h3 style={{
@@ -33,32 +31,36 @@ export default function NoticeCard({ notice, onEdit, onDelete }) {
         </div>
 
         <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
-          <button
-            onClick={() => onEdit(notice)}
-            title="Edit"
-            style={{
-              padding: '8px', color: 'var(--text-muted)',
-              border: '1px solid transparent', cursor: 'pointer',
-              transition: 'all 0.15s', background: 'transparent',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}
-          >
-            <Edit2 size={16} />
-          </button>
-          <button
-            onClick={() => onDelete(notice.id)}
-            title="Delete"
-            style={{
-              padding: '8px', color: 'var(--text-muted)',
-              border: '1px solid transparent', cursor: 'pointer',
-              transition: 'all 0.15s', background: 'transparent',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.color = 'var(--accent)'; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}
-          >
-            <Trash2 size={16} />
-          </button>
+          {onEdit && (
+            <button
+              onClick={() => onEdit(notice)}
+              title="Edit"
+              style={{
+                padding: '8px', color: 'var(--text-muted)',
+                border: '1px solid transparent', cursor: 'pointer',
+                transition: 'all 0.15s', background: 'transparent',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+            >
+              <Edit2 size={16} />
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={() => onDelete(notice.id)}
+              title="Delete"
+              style={{
+                padding: '8px', color: 'var(--text-muted)',
+                border: '1px solid transparent', cursor: 'pointer',
+                transition: 'all 0.15s', background: 'transparent',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.color = 'var(--accent)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+            >
+              <Trash2 size={16} />
+            </button>
+          )}
         </div>
       </div>
 

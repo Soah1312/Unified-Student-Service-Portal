@@ -1,16 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import EventForm from '../components/EventForm';
-import { api } from '../services/api';
+import { createEvent } from '../services/eventService';
 
 export default function CreateEvent() {
   const navigate = useNavigate();
 
   const handleCreate = async (data) => {
     try {
-      const res = await api.createEvent(data);
+      const res = await createEvent(data);
       if (res?.success) {
-        navigate('/events');
+        navigate('/admin/events');
       } else {
         alert(res?.message || 'Failed to create event');
       }
@@ -20,7 +20,7 @@ export default function CreateEvent() {
     }
   };
 
-  const handleCancel = () => navigate('/events');
+  const handleCancel = () => navigate('/admin/events');
 
   return (
     <div style={{ maxWidth: 720, display: 'flex', flexDirection: 'column', gap: 32, fontFamily: 'var(--font-ui)' }}>
@@ -34,7 +34,7 @@ export default function CreateEvent() {
           Publish New Event
         </h1>
         <p style={{ marginTop: 8, fontSize: 14, color: 'var(--text-muted)', fontFamily: 'var(--font-body)', fontStyle: 'italic' }}>
-          Add a new event to the campus calendar and open registrations.
+          Add a new event to the campus calendar for all students to view.
         </p>
       </header>
 
