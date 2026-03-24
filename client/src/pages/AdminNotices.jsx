@@ -64,7 +64,7 @@ export default function AdminNotices() {
           </Button>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 16 }}>
+        <div className="notice-admin-grid">
           {notices.map(notice => (
             <NoticeCard key={notice.id} notice={notice} onEdit={handleEdit} onDelete={handleDelete} />
           ))}

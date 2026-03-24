@@ -58,11 +58,10 @@ export default function Dashboard() {
       </header>
 
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, border: '1px solid var(--border)' }}>
+      <div className="stat-row">
         {stats.map(({ icon, label, value }, i) => (
           <div key={label} style={{
             padding: '24px 20px', textAlign: 'center',
-            borderRight: i < 3 ? '1px solid var(--border)' : 'none',
             background: 'var(--bg-card)',
             transition: 'background 0.2s',
           }}
@@ -77,10 +76,10 @@ export default function Dashboard() {
       </div>
 
       {/* Main content grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 0, border: '1px solid var(--border)' }}>
+      <div className="dashboard-grid">
 
         {/* Recent Notices */}
-        <div style={{ background: 'var(--bg-card)', borderRight: '1px solid var(--border)' }}>
+        <div style={{ background: 'var(--bg-card)' }}>
           <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <div className="editorial-label-accent" style={{ marginBottom: 4 }}>Latest</div>

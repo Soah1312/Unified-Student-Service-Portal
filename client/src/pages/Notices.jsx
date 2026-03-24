@@ -52,8 +52,8 @@ export default function Notices() {
             Notices
           </h1>
           {/* Search bar */}
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <div style={{ position: 'relative' }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', width: '100%', maxWidth: 320 }}>
+            <div style={{ position: 'relative', flex: 1 }}>
               <Search style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} size={16} />
               <input
                 type="text"
@@ -61,10 +61,10 @@ export default function Notices() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="editorial-input"
-                style={{ paddingLeft: 38, width: 260 }}
+                style={{ paddingLeft: 38, width: '100%' }}
               />
             </div>
-            <button style={{ padding: '10px 12px', background: 'var(--bg-card)', border: '1.5px solid var(--border)', cursor: 'pointer', color: 'var(--text-muted)', transition: 'all 0.2s' }}
+            <button style={{ padding: '10px 12px', background: 'var(--bg-card)', border: '1.5px solid var(--border)', cursor: 'pointer', color: 'var(--text-muted)', transition: 'all 0.2s', flexShrink: 0 }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-dark)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
               <Filter size={16} />

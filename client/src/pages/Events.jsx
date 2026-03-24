@@ -79,7 +79,7 @@ export default function Events() {
           No upcoming events on the calendar.
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
+        <div className="event-grid">
           {events.map(event => (
             <EventCard key={event.id} event={event} onRegister={handleRegister} onDelete={handleDelete} isAdmin={isAdmin} />
           ))}

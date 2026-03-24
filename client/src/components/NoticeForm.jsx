@@ -32,7 +32,7 @@ export default function NoticeForm({ initialData, onSubmit, onCancel, isSubmitti
       </div>
 
       {/* Category + Priority row */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+      <div className="form-row-2">
         <div style={fieldStyle}>
           <label className="editorial-label-field">Category</label>
           <select

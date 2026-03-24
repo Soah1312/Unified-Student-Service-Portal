@@ -41,14 +41,14 @@ export default function AdminDashboard() {
       </header>
 
       {/* Stats row */}
-      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(3, 1 + Object.keys(categoryCounts).slice(0, 2).length)}, 1fr)`, gap: 0, border: '1px solid var(--border)' }}>
-        <div style={{ padding: '32px 24px', textAlign: 'center', borderRight: '1px solid var(--border)', background: 'var(--bg-card)' }}>
+      <div className="stat-row">
+        <div style={{ padding: '32px 24px', textAlign: 'center', background: 'var(--bg-card)' }}>
           <FileText size={24} style={{ margin: '0 auto 12px', color: 'var(--text-muted)' }} />
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 48, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>{totalNotices}</div>
           <div className="editorial-label" style={{ marginTop: 8 }}>Total Notices</div>
         </div>
         {Object.entries(categoryCounts).slice(0, 2).map(([cat, count], i, arr) => (
-          <div key={cat} style={{ padding: '32px 24px', textAlign: 'center', borderRight: i < arr.length - 1 ? '1px solid var(--border)' : 'none', background: 'var(--bg-card)' }}>
+          <div key={cat} style={{ padding: '32px 24px', textAlign: 'center', background: 'var(--bg-card)' }}>
             <Grid size={24} style={{ margin: '0 auto 12px', color: i === 0 ? '#2E7D32' : '#B45309' }} />
             <div style={{ fontFamily: 'var(--font-display)', fontSize: 48, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>{count}</div>
             <div className="editorial-label" style={{ marginTop: 8 }}>{cat}</div>

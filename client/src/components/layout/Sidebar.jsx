@@ -10,19 +10,13 @@ const navItems = [
   { path: '/profile',       label: 'Profile',       icon: <User size={18} />,            section: 'V.' },
 ];
 
-export default function Sidebar() {
-  return (
-    <aside style={{
-      width: 220, flexShrink: 0,
-      background: 'var(--bg-dark)',
-      borderRight: '2px solid var(--border-dark)',
-      display: 'flex', flexDirection: 'column',
-      height: 'calc(100dvh - 83px)',
-      position: 'sticky', top: 83,
-      fontFamily: 'var(--font-ui)',
-    }}>
+import { X } from 'lucide-react';
+
+export default function Sidebar({ mobileOpen, onClose }) {
+  const content = (
+    <>
       {/* Section label */}
-      <div style={{ padding: '20px 20px 12px', borderBottom: '1px solid rgba(245,245,240,0.08)' }}>
+      <div className="app-sidebar-header" style={{ padding: '20px 20px 12px', borderBottom: '1px solid rgba(245,245,240,0.08)' }}>
         <span className="editorial-label" style={{ color: 'rgba(245,245,240,0.3)' }}>Navigation</span>
       </div>
 
@@ -57,6 +51,36 @@ export default function Sidebar() {
           © 2025 Campus Portal
         </p>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      <aside className="app-sidebar" style={{
+        width: 220, flexShrink: 0,
+        background: 'var(--bg-dark)',
+        borderRight: '2px solid var(--border-dark)',
+        flexDirection: 'column',
+        height: 'calc(100dvh - 83px)',
+        position: 'sticky', top: 83,
+        fontFamily: 'var(--font-ui)',
+      }}>
+        {content}
+      </aside>
+
+      {mobileOpen && (
+        <div className="mobile-nav-overlay" onClick={onClose}>
+          <aside className="mobile-nav-drawer" onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid rgba(245,245,240,0.08)' }}>
+              <span className="editorial-label" style={{ color: 'rgba(245,245,240,0.3)' }}>Portal Menu</span>
+              <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', padding: 4 }}>
+                <X size={20} />
+              </button>
+            </div>
+            {content}
+          </aside>
+        </div>
+      )}
+    </>
   );
 }

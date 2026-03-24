@@ -1,24 +1,24 @@
 import React from 'react';
-import { Bell, User } from 'lucide-react';
+import { Bell, User, Menu } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export default function Navbar() {
+export default function Navbar({ onMenuToggle }) {
   const unreadCount = 2;
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 
   return (
-    <header style={{
+    <header className="app-navbar" style={{
       background: 'var(--bg-dark)',
       borderBottom: '3px solid var(--border-dark)',
       position: 'sticky', top: 0, zIndex: 40,
     }}>
       {/* Top strip */}
       <div style={{
-        padding: '8px 32px',
+        padding: '8px 16px',
         borderBottom: '1px solid rgba(245,245,240,0.08)',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        display: 'flex', justifyContent: 'center', alignItems: 'center',
       }}>
-        <span style={{ fontFamily: 'var(--font-ui)', fontSize: 11, color: 'rgba(245,245,240,0.35)', letterSpacing: '0.06em' }}>
+        <span style={{ fontFamily: 'var(--font-ui)', fontSize: 11, color: 'rgba(245,245,240,0.35)', letterSpacing: '0.06em', display: 'none' }} className="md-inline">
           {today}
         </span>
         <span style={{ fontFamily: 'var(--font-ui)', fontSize: 11, color: 'rgba(245,245,240,0.25)', letterSpacing: '0.1em' }}>
@@ -28,14 +28,19 @@ export default function Navbar() {
 
       {/* Main bar */}
       <div style={{
-        height: 56, padding: '0 32px',
+        height: 56, padding: '0 16px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        flexWrap: 'wrap'
       }}>
         {/* Masthead */}
-        <Link to="/dashboard" style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-          <span style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 22, fontWeight: 900,
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button className="hamburger-btn" onClick={onMenuToggle}>
+            <Menu size={20} />
+          </button>
+          <Link to="/dashboard" style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+            <span style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(18px, 4vw, 22px)', fontWeight: 900,
             color: 'var(--text-invert)',
             letterSpacing: '-0.03em',
           }}>
@@ -43,9 +48,10 @@ export default function Navbar() {
           </span>
           <span style={{ color: 'var(--accent)', fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 900 }}>·</span>
           <span style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 900, color: 'var(--text-invert)', letterSpacing: '-0.03em' }}>
-            PORTAL
-          </span>
-        </Link>
+              PORTAL
+            </span>
+          </Link>
+        </div>
 
         {/* Right actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

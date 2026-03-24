@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 
 // Pages
@@ -17,33 +17,11 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminNotices from './pages/AdminNotices';
 import CreateNotice from './pages/CreateNotice';
 
-// Landing Page — Editorial Noir (components inlined, no wrapper page)
-import Navbar5 from './components/landing5/Navbar5';
-import Hero5 from './components/landing5/Hero5';
-import About5 from './components/landing5/About5';
-import Features5 from './components/landing5/Features5';
-import Testimonials5 from './components/landing5/Testimonials5';
-import CTA5 from './components/landing5/CTA5';
-import Footer5 from './components/landing5/Footer5';
-
-const LandingPage = () => (
-  <div style={{ overflowX: 'hidden' }}>
-    <Navbar5 />
-    <Hero5 />
-    <About5 />
-    <Features5 />
-    <Testimonials5 />
-    <CTA5 />
-    <Footer5 />
-  </div>
-);
-
-
 export default function App() {
   return (
     <Routes>
-      {/* Landing — public home */}
-      <Route path="/" element={<LandingPage />} />
+      {/* Redirect root to dashboard */}
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
       {/* Student Portal */}
       <Route element={<Layout />}>

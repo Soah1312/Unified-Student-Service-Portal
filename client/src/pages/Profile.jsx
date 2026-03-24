@@ -69,7 +69,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 24 }}>
+      <div className="profile-grid">
 
         {/* Left: Contact */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0, border: '1px solid var(--border)' }}>
@@ -103,9 +103,9 @@ export default function Profile() {
             <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', background: 'var(--bg-dark)' }}>
               <div className="editorial-label" style={{ color: 'rgba(245,245,240,0.4)' }}>Academic Overview</div>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', background: 'var(--bg-card)' }}>
+            <div className="acad-stats-grid">
               {acadStats.map(({ label, value }, i) => (
-                <div key={label} style={{ padding: '20px 16px', textAlign: 'center', borderRight: i < 3 ? '1px solid var(--border)' : 'none' }}>
+                <div key={label} style={{ padding: '20px 16px', textAlign: 'center' }}>
                   <div style={{ fontFamily: 'var(--font-display)', fontSize: 32, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>{value}</div>
                   <div className="editorial-label" style={{ marginTop: 6 }}>{label}</div>
                 </div>

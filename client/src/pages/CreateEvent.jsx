@@ -20,18 +20,28 @@ export default function CreateEvent() {
     }
   };
 
-  const handleCancel = () => {
-    navigate('/events');
-  };
+  const handleCancel = () => navigate('/events');
 
   return (
-    <div className="max-w-4xl mx-auto w-full py-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-100">Event Management</h1>
-        <p className="text-gray-400 text-sm mt-1">Admin tool to publish new campus events.</p>
+    <div style={{ maxWidth: 720, display: 'flex', flexDirection: 'column', gap: 32, fontFamily: 'var(--font-ui)' }}>
+
+      {/* Header */}
+      <header style={{ borderBottom: '3px solid var(--border-dark)', paddingBottom: 24 }}>
+        <div className="editorial-label-accent" style={{ marginBottom: 8 }}>
+          Events · Create
+        </div>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(26px, 4vw, 40px)', fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1.05, letterSpacing: '-0.03em' }}>
+          Publish New Event
+        </h1>
+        <p style={{ marginTop: 8, fontSize: 14, color: 'var(--text-muted)', fontFamily: 'var(--font-body)', fontStyle: 'italic' }}>
+          Add a new event to the campus calendar and open registrations.
+        </p>
+      </header>
+
+      {/* Form */}
+      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '32px' }}>
+        <EventForm onSubmit={handleCreate} onCancel={handleCancel} />
       </div>
-      
-      <EventForm onSubmit={handleCreate} onCancel={handleCancel} />
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, LogOut } from 'lucide-react';
+import { LayoutDashboard, FileText, LogOut, X } from 'lucide-react';
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ mobileOpen, onClose }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -10,15 +10,8 @@ export default function AdminSidebar() {
     navigate('/admin/login');
   };
 
-  return (
-    <aside style={{
-      width: 240, flexShrink: 0,
-      background: 'var(--bg-dark)',
-      borderRight: '2px solid var(--border-dark)',
-      display: 'flex', flexDirection: 'column',
-      height: '100dvh', position: 'sticky', top: 0,
-      fontFamily: 'var(--font-ui)',
-    }}>
+  const content = (
+    <>
       {/* Brand */}
       <div style={{ padding: '28px 24px', borderBottom: '1px solid rgba(245,245,240,0.08)' }}>
         <div className="editorial-label-accent" style={{ marginBottom: 8 }}>Admin Console</div>
@@ -77,6 +70,34 @@ export default function AdminSidebar() {
           Sign Out
         </button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      <aside className="app-sidebar" style={{
+        width: 240, flexShrink: 0,
+        background: 'var(--bg-dark)',
+        borderRight: '2px solid var(--border-dark)',
+        flexDirection: 'column',
+        height: '100dvh', position: 'sticky', top: 0,
+        fontFamily: 'var(--font-ui)',
+      }}>
+        {content}
+      </aside>
+
+      {mobileOpen && (
+        <div className="mobile-nav-overlay" onClick={onClose} style={{ zIndex: 100 }}>
+          <aside className="mobile-nav-drawer" onClick={e => e.stopPropagation()}>
+            <div style={{ padding: 16, display: 'flex', justifyContent: 'flex-end', borderBottom: '1px solid rgba(245,245,240,0.08)' }}>
+              <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', padding: 8 }}>
+                <X size={20} />
+              </button>
+            </div>
+            {content}
+          </aside>
+        </div>
+      )}
+    </>
   );
 }
