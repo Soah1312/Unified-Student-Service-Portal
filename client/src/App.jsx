@@ -6,6 +6,7 @@ import Layout from './components/layout/Layout';
 import Dashboard from './pages/Dashboard';
 import Notices from './pages/Notices';
 import Events from './pages/Events';
+import CreateEvent from './pages/CreateEvent';
 import Notifications from './pages/Notifications';
 import Profile from './pages/Profile';
 
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/notices" element={<Notices />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/events/create" element={<CreateEvent />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="*" element={
@@ -32,7 +34,7 @@ export default function App() {
           </div>
         } />
       </Route>
-      
+
       {/* Admin Routes */}
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route element={<AdminLayout />}>
