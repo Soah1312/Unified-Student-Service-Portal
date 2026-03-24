@@ -35,3 +35,8 @@ client/build
 # Server Config
 server/error.log
 server/error.txt
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example

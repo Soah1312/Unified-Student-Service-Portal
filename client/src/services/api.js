@@ -35,6 +35,13 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ userId }),
     }),
+  createEvent: (data) =>
+    fetchAPI('/events', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  deleteEvent: (id) =>
+    fetchAPI(`/events/${id}`, { method: 'DELETE' }),
     
   // Users
   getProfile: () => fetchAPI('/users/profile'),

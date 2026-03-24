@@ -6,6 +6,7 @@ import Layout from './components/layout/Layout';
 import Dashboard from './pages/Dashboard';
 import Notices from './pages/Notices';
 import Events from './pages/Events';
+import CreateEvent from './pages/CreateEvent';
 import Notifications from './pages/Notifications';
 import Profile from './pages/Profile';
 
@@ -23,8 +24,10 @@ export default function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/notices" element={<Notices />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/events/create" element={<CreateEvent />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/profile" element={<Profile />} />
+        
         <Route path="*" element={
           <div className="flex flex-col items-center justify-center h-full pt-20">
             <h1 className="text-4xl font-bold text-slate-600 mb-2">404</h1>
@@ -35,11 +38,11 @@ export default function App() {
       
       {/* Admin Routes */}
       <Route path="/admin/login" element={<AdminLogin />} />
-      <Route element={<AdminLayout />}>
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/notices" element={<AdminNotices />} />
-        <Route path="/admin/notices/create" element={<CreateNotice />} />
-        <Route path="/admin/notices/edit/:id" element={<CreateNotice />} />
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="notices" element={<AdminNotices />} />
+        <Route path="notices/create" element={<CreateNotice />} />
+        <Route path="notices/edit/:id" element={<CreateNotice />} />
       </Route>
     </Routes>
   );

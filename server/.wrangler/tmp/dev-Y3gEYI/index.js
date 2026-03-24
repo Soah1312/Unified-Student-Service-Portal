@@ -2292,98 +2292,52 @@ var notices_default = notices2;
 // src/services/eventService.js
 var events = [
   {
-    id: 1,
+    id: "1",
     title: "Annual Tech Fest 2026 - TechZen",
-    category: "Technical",
+    description: "Join us for TechZen 2026 \u2014 our flagship annual tech festival.",
     date: "2026-04-05",
-    time: "10:00 AM - 6:00 PM",
-    venue: "Main Auditorium & Ground Floor Labs",
-    description: "Join us for TechZen 2026 \u2014 our flagship annual tech festival featuring hackathons, project expos, robotics competitions, AI workshops, and more. Open to all students. Cash prizes worth \u20B91,00,000!",
-    organizer: "Technical Club",
-    maxAttendees: 500,
-    registeredUsers: ["student_001", "student_002", "student_003"],
-    tags: ["hackathon", "tech", "competition"],
-    image: "techfest"
+    location: "Main Auditorium",
+    seats: 500,
+    registeredUsers: ["student_001", "student_002"]
   },
   {
-    id: 2,
-    title: "Career Guidance Seminar - Campus Placements",
-    category: "Career",
+    id: "2",
+    title: "Career Guidance Seminar",
+    description: "Industry veterans and alumni will share insights on cracking campus placements.",
     date: "2026-04-08",
-    time: "2:00 PM - 5:00 PM",
-    venue: "Seminar Hall B",
-    description: "Industry veterans and alumni will share insights on cracking campus placements, building strong resumes, and acing technical and HR interviews. Mandatory for final year students.",
-    organizer: "Training & Placement Cell",
-    maxAttendees: 200,
-    registeredUsers: ["student_001"],
-    tags: ["placement", "career", "seminar"],
-    image: "career"
-  },
-  {
-    id: 3,
-    title: "Cultural Night - Rang Mahotsav",
-    category: "Cultural",
-    date: "2026-04-12",
-    time: "6:00 PM - 10:00 PM",
-    venue: "Open Air Theatre",
-    description: "Celebrate cultures and talent at Rang Mahotsav \u2014 an evening of music, dance, drama, and art. Registrations open for performers. Free entry for audience.",
-    organizer: "Cultural Committee",
-    maxAttendees: 1e3,
-    registeredUsers: [],
-    tags: ["cultural", "music", "dance"],
-    image: "cultural"
-  },
-  {
-    id: 4,
-    title: "Entrepreneurship Bootcamp",
-    category: "Workshop",
-    date: "2026-04-15",
-    time: "9:00 AM - 4:00 PM",
-    venue: "Innovation Hub",
-    description: "A hands-on 1-day bootcamp for aspiring entrepreneurs. Learn ideation, lean startup methodology, pitching, and get mentored by successful startup founders.",
-    organizer: "E-Cell",
-    maxAttendees: 60,
-    registeredUsers: ["student_003", "student_004"],
-    tags: ["startup", "entrepreneurship", "workshop"],
-    image: "bootcamp"
-  },
-  {
-    id: 5,
-    title: "Blood Donation Camp",
-    category: "Social",
-    date: "2026-04-17",
-    time: "9:00 AM - 1:00 PM",
-    venue: "Medical Centre",
-    description: "Do your part for society. The annual Blood Donation Camp is being organized in collaboration with the City Blood Bank. All participants will receive a certificate of appreciation.",
-    organizer: "NSS Unit",
-    maxAttendees: 150,
-    registeredUsers: [],
-    tags: ["social", "health", "nss"],
-    image: "social"
+    location: "Seminar Hall B",
+    seats: 200,
+    registeredUsers: ["student_001"]
   }
 ];
-var getAllEvents = /* @__PURE__ */ __name(() => events.map((e) => ({
-  ...e,
-  attendeeCount: e.registeredUsers.length,
-  spotsLeft: e.maxAttendees - e.registeredUsers.length
-})), "getAllEvents");
-var getEventById = /* @__PURE__ */ __name((id) => {
-  const event = events.find((e) => e.id === parseInt(id));
-  if (!event)
-    return null;
-  return {
-    ...event,
-    attendeeCount: event.registeredUsers.length,
-    spotsLeft: event.maxAttendees - event.registeredUsers.length
+var getAllEvents = /* @__PURE__ */ __name(() => events, "getAllEvents");
+var getEventById = /* @__PURE__ */ __name((id) => events.find((e) => e.id === id) || null, "getEventById");
+var createEvent = /* @__PURE__ */ __name((data) => {
+  const newEvent = {
+    id: Date.now().toString(),
+    title: data.title || "Untitled",
+    description: data.description || "",
+    date: data.date || "",
+    location: data.location || "",
+    seats: Number(data.seats) || 0,
+    registeredUsers: [],
+    ...data
   };
-}, "getEventById");
+  events.push(newEvent);
+  return newEvent;
+}, "createEvent");
+var deleteEvent = /* @__PURE__ */ __name((id) => {
+  const initialLength = events.length;
+  events = events.filter((e) => e.id !== id);
+  return events.length !== initialLength;
+}, "deleteEvent");
 var registerForEvent = /* @__PURE__ */ __name((eventId, userId) => {
-  const event = events.find((e) => e.id === parseInt(eventId));
+  const event = events.find((e) => e.id === eventId);
   if (!event)
     return { success: false, message: "Event not found" };
   if (event.registeredUsers.includes(userId))
     return { success: false, message: "Already registered" };
-  if (event.registeredUsers.length >= event.maxAttendees)
+  if (event.registeredUsers.length >= event.seats)
     return { success: false, message: "Event is full" };
   event.registeredUsers.push(userId);
   return { success: true, message: "Registration successful", eventId: event.id };
@@ -2400,6 +2354,21 @@ events2.get("/:id", (c) => {
   if (!event)
     return c.json({ success: false, message: "Event not found" }, 404);
   return c.json({ success: true, data: event });
+});
+events2.post("/", async (c) => {
+  try {
+    const data = await c.req.json();
+    const newEvent = createEvent(data);
+    return c.json({ success: true, data: newEvent }, 201);
+  } catch (e) {
+    return c.json({ success: false, message: "Invalid JSON body" }, 400);
+  }
+});
+events2.delete("/:id", (c) => {
+  const deleted = deleteEvent(c.req.param("id"));
+  if (!deleted)
+    return c.json({ success: false, message: "Event not found" }, 404);
+  return c.json({ success: true, message: "Event deleted" });
 });
 events2.post("/:id/register", async (c) => {
   try {
