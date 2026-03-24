@@ -6,6 +6,7 @@ import Layout from './components/layout/Layout';
 import Dashboard from './pages/Dashboard';
 import Notices from './pages/Notices';
 import Events from './pages/Events';
+import CreateEvent from './pages/CreateEvent';
 import Notifications from './pages/Notifications';
 import Profile from './pages/Profile';
 
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/notices" element={<Notices />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/events/create" element={<CreateEvent />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="*" element={
@@ -24,7 +26,16 @@ export default function App() {
             <p className="text-slate-400">Page not found</p>
           </div>
         } />
-      </Routes>
-    </Layout>
+      </Route>
+
+      {/* Admin Routes */}
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route element={<AdminLayout />}>
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/notices" element={<AdminNotices />} />
+        <Route path="/admin/notices/create" element={<CreateNotice />} />
+        <Route path="/admin/notices/edit/:id" element={<CreateNotice />} />
+      </Route>
+    </Routes>
   );
 }
