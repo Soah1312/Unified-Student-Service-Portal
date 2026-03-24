@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from './Button';
-import { Send, User } from 'lucide-react';
+import { Send } from 'lucide-react';
 
 export default function CommentSection({ comments = [], onAddComment }) {
   const [newComment, setNewComment] = useState('');
@@ -14,43 +14,55 @@ export default function CommentSection({ comments = [], onAddComment }) {
   };
 
   return (
-    <div className="mt-6 flex flex-col gap-4">
-      <h3 className="text-lg font-semibold border-b border-[rgba(255,255,255,0.1)] pb-2 mb-2">
-        Comments ({comments.length})
-      </h3>
-      
-      <div className="flex flex-col gap-4 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+    <div style={{ marginTop: 24 }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, borderTop: '3px solid var(--border-dark)', paddingTop: 20, marginBottom: 20 }}>
+        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>
+          Discussion
+        </h3>
+        <span className="editorial-label" style={{ color: 'var(--text-muted)' }}>{comments.length} comment{comments.length !== 1 ? 's' : ''}</span>
+      </div>
+
+      {/* Comments list */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 0, maxHeight: 280, overflowY: 'auto', marginBottom: 20 }}>
         {comments.length === 0 ? (
-          <p className="text-sm text-slate-400 italic">No comments yet. Be the first to start the discussion!</p>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--text-muted)', fontStyle: 'italic', padding: '16px 0' }}>
+            No comments yet. Start the discussion.
+          </p>
         ) : (
-          comments.map((comment) => (
-            <div key={comment.id} className="flex gap-3 animate-fade-in">
-              <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-bold text-sm shrink-0">
-                {comment.avatar || <User size={18} />}
+          comments.map((comment, i) => (
+            <div
+              key={comment.id || i}
+              className="animate-fade-in"
+              style={{ borderBottom: '1px solid var(--border)', padding: '16px 0' }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
+                <span style={{ fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>
+                  {comment.user}
+                </span>
+                <span className="editorial-label" style={{ color: 'var(--text-muted)' }}>
+                  {new Date(comment.timestamp).toLocaleDateString()} · {new Date(comment.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
               </div>
-              <div className="flex-1 bg-[rgba(255,255,255,0.03)] rounded-lg p-3">
-                <div className="flex justify-between items-start mb-1">
-                  <span className="font-semibold text-sm text-blue-300">{comment.user}</span>
-                  <span className="text-xs text-slate-500">
-                    {new Date(comment.timestamp).toLocaleDateString()} {new Date(comment.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                  </span>
-                </div>
-                <p className="text-sm text-slate-200 whitespace-pre-wrap">{comment.text}</p>
-              </div>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                {comment.text}
+              </p>
             </div>
           ))
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-2 flex gap-2">
+      {/* Input */}
+      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 8 }}>
         <input
           type="text"
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Add a comment..."
-          className="flex-1 bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.1)] rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+          className="editorial-input"
+          style={{ flex: 1 }}
         />
-        <Button type="submit" disabled={!newComment.trim()} icon={<Send size={16} />}>
+        <Button type="submit" disabled={!newComment.trim()} icon={<Send size={14} />} size="sm">
           Post
         </Button>
       </form>

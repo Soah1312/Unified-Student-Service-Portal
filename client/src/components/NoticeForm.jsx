@@ -3,60 +3,56 @@ import Button from './ui/Button';
 
 export default function NoticeForm({ initialData, onSubmit, onCancel, isSubmitting }) {
   const [formData, setFormData] = useState({
-    title: initialData?.title || '',
+    title:    initialData?.title    || '',
     category: initialData?.category || 'Academic',
     priority: initialData?.priority || 'medium',
-    content: initialData?.content || ''
+    content:  initialData?.content  || '',
   });
 
-  const handleChange = (e) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  const handleChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleSubmit = (e) => { e.preventDefault(); onSubmit(formData); };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
+  const fieldStyle = { display: 'flex', flexDirection: 'column', gap: 6 };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <div>
-        <label className="block text-sm font-medium text-slate-300 mb-1">Title</label>
-        <input 
-          type="text" 
-          name="title" 
-          value={formData.title} 
-          onChange={handleChange} 
-          required 
-          className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-          placeholder="Notice Title"
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+
+      {/* Title */}
+      <div style={fieldStyle}>
+        <label className="editorial-label-field">Notice Title</label>
+        <input
+          type="text"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          required
+          placeholder="e.g. Examination Schedule — April 2025"
+          className="editorial-input"
         />
       </div>
-      
-      <div className="flex gap-4">
-        <div className="flex-1">
-          <label className="block text-sm font-medium text-slate-300 mb-1">Category</label>
-          <select 
-            name="category" 
-            value={formData.category} 
+
+      {/* Category + Priority row */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div style={fieldStyle}>
+          <label className="editorial-label-field">Category</label>
+          <select
+            name="category"
+            value={formData.category}
             onChange={handleChange}
-            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+            className="editorial-input"
           >
-            <option value="Academic">Academic</option>
-            <option value="Facilities">Facilities</option>
-            <option value="Finance">Finance</option>
-            <option value="Infrastructure">Infrastructure</option>
-            <option value="Administration">Administration</option>
+            {['Academic', 'Facilities', 'Finance', 'Infrastructure', 'Administration'].map(c => (
+              <option key={c} value={c}>{c}</option>
+            ))}
           </select>
         </div>
-        
-        <div className="flex-1">
-          <label className="block text-sm font-medium text-slate-300 mb-1">Priority</label>
-          <select 
-            name="priority" 
-            value={formData.priority} 
+        <div style={fieldStyle}>
+          <label className="editorial-label-field">Priority</label>
+          <select
+            name="priority"
+            value={formData.priority}
             onChange={handleChange}
-            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+            className="editorial-input"
           >
             <option value="high">High</option>
             <option value="medium">Medium</option>
@@ -64,26 +60,38 @@ export default function NoticeForm({ initialData, onSubmit, onCancel, isSubmitti
           </select>
         </div>
       </div>
-      
-      <div>
-        <label className="block text-sm font-medium text-slate-300 mb-1">Content</label>
-        <textarea 
-          name="content" 
-          value={formData.content} 
-          onChange={handleChange} 
-          required 
-          rows="5"
-          className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-          placeholder="Write the notice details here..."
+
+      {/* Content */}
+      <div style={fieldStyle}>
+        <label className="editorial-label-field">Content</label>
+        <textarea
+          name="content"
+          value={formData.content}
+          onChange={handleChange}
+          required
+          rows={6}
+          placeholder="Write the full notice here..."
+          className="editorial-input"
+          style={{ resize: 'vertical', fontFamily: 'var(--font-body)', lineHeight: 1.7 }}
         />
       </div>
 
-      <div className="flex justify-end gap-3 mt-4">
-        <Button type="button" variant="ghost" onClick={onCancel}>
-          Cancel
-        </Button>
+      {/* Priority indicator */}
+      {formData.priority === 'high' && (
+        <div style={{ padding: '10px 14px', borderLeft: '3px solid var(--accent)', background: 'rgba(255,51,51,0.04)', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontSize: 12, color: 'var(--accent)', fontFamily: 'var(--font-ui)', fontWeight: 600 }}>
+            HIGH PRIORITY — This notice will be highlighted in bold red across all views.
+          </span>
+        </div>
+      )}
+
+      <hr className="editorial-rule" />
+
+      {/* Actions */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+        <Button type="button" variant="ghost" onClick={onCancel}>Cancel</Button>
         <Button type="submit" variant="primary" isLoading={isSubmitting}>
-          {initialData ? 'Update Notice' : 'Create Notice'}
+          {initialData ? 'Update Notice' : 'Publish Notice'}
         </Button>
       </div>
     </form>

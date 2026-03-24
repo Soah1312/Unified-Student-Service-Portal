@@ -2,36 +2,60 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, Megaphone, Calendar, Bell, User } from 'lucide-react';
 
-export default function Sidebar() {
-  const navItems = [
-    { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-    { path: '/notices', label: 'Notices', icon: <Megaphone size={20} /> },
-    { path: '/events', label: 'Events', icon: <Calendar size={20} /> },
-    { path: '/notifications', label: 'Notifications', icon: <Bell size={20} /> },
-    { path: '/profile', label: 'Profile', icon: <User size={20} /> },
-  ];
+const navItems = [
+  { path: '/dashboard',      label: 'Dashboard',     icon: <LayoutDashboard size={18} />, section: 'I.' },
+  { path: '/notices',       label: 'Notices',       icon: <Megaphone size={18} />,       section: 'II.' },
+  { path: '/events',        label: 'Events',        icon: <Calendar size={18} />,        section: 'III.' },
+  { path: '/notifications', label: 'Notifications', icon: <Bell size={18} />,            section: 'IV.' },
+  { path: '/profile',       label: 'Profile',       icon: <User size={18} />,            section: 'V.' },
+];
 
+export default function Sidebar() {
   return (
-    <aside className="w-64 border-r border-[rgba(255,255,255,0.1)] bg-[rgba(30,41,59,0.5)] hidden md:flex flex-col h-[calc(100vh-4rem)] sticky top-16">
-      <nav className="flex-1 px-4 py-6 flex flex-col gap-2">
-        {navItems.map((item) => (
+    <aside style={{
+      width: 220, flexShrink: 0,
+      background: 'var(--bg-dark)',
+      borderRight: '2px solid var(--border-dark)',
+      display: 'flex', flexDirection: 'column',
+      height: 'calc(100dvh - 83px)',
+      position: 'sticky', top: 83,
+      fontFamily: 'var(--font-ui)',
+    }}>
+      {/* Section label */}
+      <div style={{ padding: '20px 20px 12px', borderBottom: '1px solid rgba(245,245,240,0.08)' }}>
+        <span className="editorial-label" style={{ color: 'rgba(245,245,240,0.3)' }}>Navigation</span>
+      </div>
+
+      <nav style={{ flex: 1, padding: '8px 0' }}>
+        {navItems.map(({ path, label, icon, section }) => (
           <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) => 
-              `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 font-medium text-sm
-              ${isActive 
-                ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.15)]' 
-                : 'text-slate-400 hover:text-slate-200 hover:bg-[rgba(255,255,255,0.05)]'}`
-            }
+            key={path}
+            to={path}
+            end={path === '/dashboard'}
+            style={({ isActive }) => ({
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: '12px 20px',
+              borderLeft: isActive ? '3px solid var(--accent)' : '3px solid transparent',
+              background: isActive ? 'rgba(255,51,51,0.06)' : 'transparent',
+              color: isActive ? 'var(--text-invert)' : 'rgba(245,245,240,0.45)',
+              fontSize: 13, fontWeight: isActive ? 700 : 400,
+              letterSpacing: '0.01em',
+              transition: 'all 0.15s',
+              textDecoration: 'none',
+            })}
+            onMouseEnter={e => { if (!e.currentTarget.style.borderLeft.includes('accent')) { e.currentTarget.style.color = 'rgba(245,245,240,0.8)'; e.currentTarget.style.background = 'rgba(245,245,240,0.04)'; } }}
+            onMouseLeave={e => { if (!e.currentTarget.style.borderLeft.includes('accent')) { e.currentTarget.style.color = 'rgba(245,245,240,0.45)'; e.currentTarget.style.background = 'transparent'; } }}
           >
-            {item.icon}
-            {item.label}
+            <span style={{ opacity: 0.7, flexShrink: 0 }}>{icon}</span>
+            <span>{label}</span>
           </NavLink>
         ))}
       </nav>
-      <div className="p-4 border-t border-[rgba(255,255,255,0.1)] text-xs text-center text-slate-500">
-        &copy; 2026 Unified Portal
+
+      <div style={{ padding: '16px 20px', borderTop: '1px solid rgba(245,245,240,0.06)' }}>
+        <p style={{ fontSize: 11, color: 'rgba(245,245,240,0.2)', lineHeight: 1.6 }}>
+          © 2025 Campus Portal
+        </p>
       </div>
     </aside>
   );

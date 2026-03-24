@@ -11,36 +11,69 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="w-64 bg-slate-900 border-r border-[rgba(255,255,255,0.1)] flex flex-col h-full shrink-0 hidden md:flex">
-      <div className="p-6">
-        <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
-          Admin Portal
-        </h2>
+    <aside style={{
+      width: 240, flexShrink: 0,
+      background: 'var(--bg-dark)',
+      borderRight: '2px solid var(--border-dark)',
+      display: 'flex', flexDirection: 'column',
+      height: '100dvh', position: 'sticky', top: 0,
+      fontFamily: 'var(--font-ui)',
+    }}>
+      {/* Brand */}
+      <div style={{ padding: '28px 24px', borderBottom: '1px solid rgba(245,245,240,0.08)' }}>
+        <div className="editorial-label-accent" style={{ marginBottom: 8 }}>Admin Console</div>
+        <div style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 20, fontWeight: 900,
+          color: 'var(--text-invert)',
+          letterSpacing: '-0.02em', lineHeight: 1.1,
+        }}>
+          THE CAMPUS<span style={{ color: 'var(--accent)' }}>·</span>PORTAL
+        </div>
       </div>
-      
-      <nav className="flex-1 px-4 flex flex-col gap-2">
-        <NavLink 
-          to="/admin/dashboard" 
-          className={({isActive}) => `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive ? 'bg-blue-600/20 text-blue-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
-        >
-          <LayoutDashboard size={20} />
-          Dashboard
-        </NavLink>
-        <NavLink 
-          to="/admin/notices" 
-          className={({isActive}) => `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive ? 'bg-blue-600/20 text-blue-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
-        >
-          <FileText size={20} />
-          Notices Management
-        </NavLink>
+
+      <nav style={{ flex: 1, padding: '12px 0' }}>
+        {[
+          { to: '/admin/dashboard', label: 'Dashboard',   icon: <LayoutDashboard size={18} /> },
+          { to: '/admin/notices',   label: 'Notices',      icon: <FileText size={18} />      },
+        ].map(({ to, label, icon }) => (
+          <NavLink
+            key={to}
+            to={to}
+            style={({ isActive }) => ({
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: '13px 24px',
+              borderLeft: isActive ? '3px solid var(--accent)' : '3px solid transparent',
+              background: isActive ? 'rgba(255,51,51,0.06)' : 'transparent',
+              color: isActive ? 'var(--text-invert)' : 'rgba(245,245,240,0.45)',
+              fontSize: 13, fontWeight: isActive ? 700 : 400,
+              transition: 'all 0.15s',
+              textDecoration: 'none',
+            })}
+          >
+            <span style={{ opacity: 0.7, flexShrink: 0 }}>{icon}</span>
+            {label}
+          </NavLink>
+        ))}
       </nav>
 
-      <div className="p-4 border-t border-[rgba(255,255,255,0.1)]">
-        <button 
+      <div style={{ padding: '16px 12px', borderTop: '1px solid rgba(245,245,240,0.08)' }}>
+        <button
           onClick={handleLogout}
-          className="flex w-full items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-400/10 transition-colors"
+          style={{
+            display: 'flex', alignItems: 'center', gap: 12,
+            width: '100%', padding: '12px 12px',
+            background: 'transparent',
+            color: 'var(--accent)',
+            fontSize: 13, fontWeight: 600,
+            border: '1px solid rgba(255,51,51,0.2)',
+            cursor: 'pointer', transition: 'all 0.2s',
+            fontFamily: 'var(--font-ui)',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,51,51,0.08)'; e.currentTarget.style.borderColor = 'var(--accent)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(255,51,51,0.2)'; }}
         >
-          <LogOut size={20} />
+          <LogOut size={16} />
           Sign Out
         </button>
       </div>

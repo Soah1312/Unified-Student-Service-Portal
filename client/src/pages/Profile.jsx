@@ -1,146 +1,133 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
-import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
-import { User, Mail, Phone, BookOpen, Clock, ShieldCheck, Edit3 } from 'lucide-react';
+import Button from '../components/ui/Button';
+import { Mail, Phone, BookOpen, Clock, ShieldCheck, Calendar } from 'lucide-react';
 
 export default function Profile() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchProfile();
+    api.getProfile().then(res => {
+      if (res?.success) setProfile(res.data);
+      setLoading(false);
+    });
   }, []);
 
-  const fetchProfile = async () => {
-    const res = await api.getProfile();
-    if (res?.success) setProfile(res.data);
-    setLoading(false);
-  };
+  if (loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 300, fontFamily: 'var(--font-display)', fontSize: 18, color: 'var(--text-muted)', fontStyle: 'italic' }}>
+      Loading profile...
+    </div>
+  );
+  if (!profile) return (
+    <div style={{ textAlign: 'center', padding: 60, fontFamily: 'var(--font-display)', color: 'var(--text-muted)', fontStyle: 'italic' }}>Profile not found.</div>
+  );
 
-  if (loading) return <div className="text-center p-10 text-slate-400">Loading profile...</div>;
-  if (!profile) return <div className="text-center p-10 text-slate-400">Profile not found.</div>;
+  const acadStats = [
+    { label: 'Current Term', value: profile.semester },
+    { label: 'CGPA', value: profile.cgpa },
+    { label: 'Credits Earned', value: profile.credits },
+    { label: 'Registered Events', value: profile.registeredEvents?.length || 0 },
+  ];
+
+  const activity = [
+    { label: 'Registered for TechZen 2026', date: 'Mar 19, 2026' },
+    { label: 'Updated contact information', date: 'Mar 12, 2026' },
+    { label: 'Commented on Exam Schedule notice', date: 'Mar 10, 2026' },
+  ];
 
   return (
-    <div className="flex flex-col gap-6 max-w-5xl mx-auto">
-      <div className="relative mb-16">
-        {/* Cover Image */}
-        <div className="h-48 rounded-xl bg-gradient-to-r from-blue-900 to-indigo-900 overflow-hidden relative border border-[rgba(255,255,255,0.1)]">
-          <div className="absolute inset-0 opacity-20 bg-pattern"></div>
-        </div>
-        
-        {/* Avatar & Header */}
-        <div className="absolute -bottom-16 left-8 flex items-end gap-6">
-          <div className="w-32 h-32 rounded-2xl bg-slate-800 border-4 border-slate-900 shadow-xl flex items-center justify-center overflow-hidden">
-             <span className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-white to-slate-400">
-               {profile.avatar}
-             </span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 40, maxWidth: 1000, fontFamily: 'var(--font-ui)' }}>
+
+      {/* Profile Header */}
+      <div style={{ borderBottom: '3px solid var(--border-dark)', paddingBottom: 32 }}>
+        <div className="editorial-label-accent" style={{ marginBottom: 12 }}>Student Profile</div>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 24, flexWrap: 'wrap' }}>
+          {/* Avatar */}
+          <div style={{
+            width: 80, height: 80, background: 'var(--bg-dark)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            border: '2px solid var(--border-dark)', flexShrink: 0,
+          }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 36, fontWeight: 900, color: 'var(--text-invert)' }}>
+              {profile.avatar || profile.name?.[0] || 'A'}
+            </span>
           </div>
-          <div className="mb-2">
-            <h1 className="text-3xl font-bold text-white leading-tight">{profile.name}</h1>
-            <p className="text-slate-300 font-medium flex items-center gap-2">
-              {profile.rollNo} • {profile.branch} 
-              <Badge variant="success" className="ml-2 scale-90"><ShieldCheck size={12} className="mr-1 inline"/> Verified Student</Badge>
-            </p>
+          <div style={{ flex: 1 }}>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(24px, 4vw, 44px)', fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.03em', lineHeight: 1, marginBottom: 8 }}>
+              {profile.name}
+            </h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+              <span className="editorial-label">{profile.rollNo}</span>
+              <span style={{ color: 'var(--border)' }}>·</span>
+              <span className="editorial-label">{profile.branch}</span>
+              <Badge variant="success"><ShieldCheck size={10} style={{ marginRight: 4, display: 'inline' }} />Verified Student</Badge>
+            </div>
           </div>
+          <Button variant="secondary" size="sm">Edit Profile</Button>
         </div>
-        
-        <button className="absolute top-4 right-4 bg-black/40 hover:bg-black/60 backdrop-blur text-white p-2 rounded-lg transition-colors flex items-center gap-2 text-sm border border-white/10">
-          <Edit3 size={16} /> Edit Profile Cover
-        </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        
-        <div className="md:col-span-1 flex flex-col gap-6">
-          <Card className="flex flex-col gap-4">
-            <h2 className="text-lg font-bold border-b border-[rgba(255,255,255,0.1)] pb-2 mb-2 text-slate-200">Contact Information</h2>
-            
-            <div className="flex items-center gap-3 text-sm">
-              <div className="w-8 h-8 rounded-full bg-[rgba(255,255,255,0.05)] flex flex-shrink-0 items-center justify-center text-slate-400"><Mail size={16} /></div>
-              <div className="overflow-hidden">
-                <p className="text-slate-500 text-xs font-semibold uppercase">Email Address</p>
-                <p className="text-slate-200 truncate" title={profile.email}>{profile.email}</p>
+      <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 24 }}>
+
+        {/* Left: Contact */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 0, border: '1px solid var(--border)' }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', background: 'var(--bg-dark)' }}>
+            <div className="editorial-label" style={{ color: 'rgba(245,245,240,0.4)' }}>Contact</div>
+          </div>
+          <div style={{ background: 'var(--bg-card)' }}>
+            {[
+              { icon: <Mail size={14} />, label: 'Email', value: profile.email },
+              { icon: <Phone size={14} />, label: 'Phone', value: profile.phone },
+            ].map(({ icon, label, value }) => (
+              <div key={label} style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                <div style={{ color: 'var(--text-muted)', paddingTop: 2, flexShrink: 0 }}>{icon}</div>
+                <div>
+                  <div className="editorial-label" style={{ marginBottom: 4 }}>{label}</div>
+                  <div style={{ fontSize: 13, color: 'var(--text-primary)', wordBreak: 'break-all' }}>{value}</div>
+                </div>
               </div>
-            </div>
-            
-            <div className="flex items-center gap-3 text-sm">
-              <div className="w-8 h-8 rounded-full bg-[rgba(255,255,255,0.05)] flex flex-shrink-0 items-center justify-center text-slate-400"><Phone size={16} /></div>
-              <div>
-                <p className="text-slate-500 text-xs font-semibold uppercase">Phone Number</p>
-                <p className="text-slate-200">{profile.phone}</p>
-              </div>
-            </div>
-            
-            <button className="mt-4 w-full py-2 bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] rounded-lg text-sm transition-colors text-blue-400 font-medium border border-[rgba(255,255,255,0.05)] border-dashed">
-              Update Contact Details
-            </button>
-          </Card>
+            ))}
+          </div>
+          <div style={{ padding: '16px 20px', background: 'var(--bg-card)' }}>
+            <Button variant="ghost" fullWidth size="sm">Update contact</Button>
+          </div>
         </div>
 
-        <div className="md:col-span-2 flex flex-col gap-6">
-          <Card>
-             <h2 className="text-lg font-bold border-b border-[rgba(255,255,255,0.1)] pb-2 mb-4 text-slate-200">Academic Overview</h2>
-             
-             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-               <div className="p-4 rounded-xl bg-[rgba(59,130,246,0.1)] border border-blue-500/20 text-center">
-                 <p className="text-blue-400 font-semibold mb-1"><BookOpen size={20} className="mx-auto mb-2"/></p>
-                 <p className="text-2xl font-bold text-white">{profile.semester}</p>
-                 <p className="text-[10px] uppercase text-blue-300 font-bold tracking-wider mt-1">Current Term</p>
-               </div>
-               
-               <div className="p-4 rounded-xl bg-[rgba(16,185,129,0.1)] border border-emerald-500/20 text-center">
-                 <p className="text-emerald-400 font-semibold mb-1"><Award size={20} className="mx-auto mb-2"/></p>
-                 <p className="text-2xl font-bold text-white">{profile.cgpa}</p>
-                 <p className="text-[10px] uppercase text-emerald-300 font-bold tracking-wider mt-1">Current CGPA</p>
-               </div>
-               
-               <div className="p-4 rounded-xl bg-[rgba(245,158,11,0.1)] border border-amber-500/20 text-center">
-                 <p className="text-amber-400 font-semibold mb-1"><Clock size={20} className="mx-auto mb-2"/></p>
-                 <p className="text-2xl font-bold text-white">{profile.credits}</p>
-                 <p className="text-[10px] uppercase text-amber-300 font-bold tracking-wider mt-1">Earned Credits</p>
-               </div>
-               
-               <div className="p-4 rounded-xl bg-[rgba(139,92,246,0.1)] border border-purple-500/20 text-center">
-                 <p className="text-purple-400 font-semibold mb-1"><Calendar size={20} className="mx-auto mb-2"/></p>
-                 <p className="text-2xl font-bold text-white">{profile.registeredEvents?.length || 0}</p>
-                 <p className="text-[10px] uppercase text-purple-300 font-bold tracking-wider mt-1">Registered Events</p>
-               </div>
-             </div>
-          </Card>
+        {/* Right: Academics + Activity */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
 
-          <Card>
-            <h2 className="text-lg font-bold border-b border-[rgba(255,255,255,0.1)] pb-2 mb-4 text-slate-200">Recent Activity</h2>
-            <div className="flex flex-col gap-4 relative">
-              <div className="absolute left-2.5 top-2 bottom-2 w-px bg-[rgba(255,255,255,0.1)]"></div>
-              
-              <div className="flex items-start gap-4 z-10">
-                <div className="w-5 h-5 rounded-full bg-emerald-500 flex-shrink-0 mt-1 shadow-[0_0_10px_rgba(16,185,129,0.5)] border-2 border-[var(--bg-secondary)]"></div>
-                <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] rounded-lg p-3 flex-1 flex flex-col gap-1 hover:bg-[rgba(255,255,255,0.05)] transition-colors">
-                  <p className="text-sm font-medium text-slate-200">Registered for TechZen 2026</p>
-                  <p className="text-xs text-slate-400">Mar 19, 2026 at 2:30 PM</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4 z-10">
-                <div className="w-5 h-5 rounded-full bg-blue-500 flex-shrink-0 mt-1 shadow-[0_0_10px_rgba(59,130,246,0.5)] border-2 border-[var(--bg-secondary)]"></div>
-                <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] rounded-lg p-3 flex-1 flex flex-col gap-1 hover:bg-[rgba(255,255,255,0.05)] transition-colors">
-                  <p className="text-sm font-medium text-slate-200">Updated Profile Contact Information</p>
-                  <p className="text-xs text-slate-400">Mar 12, 2026 at 4:00 PM</p>
-                </div>
-              </div>
-
-               <div className="flex items-start gap-4 z-10">
-                <div className="w-5 h-5 rounded-full bg-slate-600 flex-shrink-0 mt-1 shadow-[0_0_5px_rgba(255,255,255,0.1)] border-2 border-[var(--bg-secondary)]"></div>
-                <div className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] rounded-lg p-3 flex-1 flex flex-col gap-1 hover:bg-[rgba(255,255,255,0.05)] transition-colors">
-                  <p className="text-sm font-medium text-slate-200">Commented on Exam Schedule Notice</p>
-                  <p className="text-xs text-slate-400">Mar 10, 2026 at 11:15 AM</p>
-                </div>
-              </div>
+          {/* Academic stats */}
+          <div style={{ border: '1px solid var(--border)' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', background: 'var(--bg-dark)' }}>
+              <div className="editorial-label" style={{ color: 'rgba(245,245,240,0.4)' }}>Academic Overview</div>
             </div>
-          </Card>
-        </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', background: 'var(--bg-card)' }}>
+              {acadStats.map(({ label, value }, i) => (
+                <div key={label} style={{ padding: '20px 16px', textAlign: 'center', borderRight: i < 3 ? '1px solid var(--border)' : 'none' }}>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: 32, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>{value}</div>
+                  <div className="editorial-label" style={{ marginTop: 6 }}>{label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
 
+          {/* Activity */}
+          <div style={{ border: '1px solid var(--border)' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', background: 'var(--bg-dark)' }}>
+              <div className="editorial-label" style={{ color: 'rgba(245,245,240,0.4)' }}>Recent Activity</div>
+            </div>
+            <div style={{ background: 'var(--bg-card)' }}>
+              {activity.map(({ label, date }, i) => (
+                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: i < activity.length - 1 ? '1px solid var(--border)' : 'none', gap: 16 }}>
+                  <p style={{ fontSize: 13, fontFamily: 'var(--font-body)', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{label}</p>
+                  <span className="editorial-label" style={{ flexShrink: 0, color: 'var(--text-muted)' }}>{date}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

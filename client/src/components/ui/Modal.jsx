@@ -1,32 +1,61 @@
 import React from 'react';
-import Card from './Card';
-import Button from './Button';
 import { X } from 'lucide-react';
 
 export default function Modal({ isOpen, onClose, title, children }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
-      <div 
-        className="fixed inset-0" 
-        onClick={onClose}
-        style={{ cursor: 'pointer' }}
-      ></div>
-      <Card className="relative z-10 w-full max-w-md animate-fade-up" padding="p-0">
-        <div className="flex items-center justify-between p-4 border-b border-[rgba(255,255,255,0.1)]">
-          <h2 className="text-xl font-semibold">{title}</h2>
-          <button 
+    <div
+      style={{
+        position: 'fixed', inset: 0, zIndex: 50,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '24px',
+        backgroundColor: 'rgba(26,26,26,0.7)',
+        backdropFilter: 'blur(2px)',
+      }}
+    >
+      {/* Backdrop click */}
+      <div style={{ position: 'fixed', inset: 0 }} onClick={onClose} />
+
+      {/* Modal panel */}
+      <div
+        className="animate-slide-up"
+        style={{
+          position: 'relative', zIndex: 10,
+          width: '100%', maxWidth: 560,
+          background: 'var(--bg)',
+          border: '2px solid var(--border-dark)',
+          maxHeight: '90vh', overflowY: 'auto',
+        }}
+      >
+        {/* Header */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '20px 24px',
+          borderBottom: '1px solid var(--border)',
+        }}>
+          <div>
+            <div className="editorial-label-accent" style={{ marginBottom: 4 }}>Notice</div>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.1 }}>{title}</h2>
+          </div>
+          <button
             onClick={onClose}
-            className="p-1 hover:bg-[rgba(255,255,255,0.1)] rounded-full transition-colors text-slate-400 hover:text-white"
+            style={{
+              padding: 8, color: 'var(--text-muted)',
+              border: '1px solid transparent', transition: 'all 0.2s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}
           >
             <X size={20} />
           </button>
         </div>
-        <div className="p-6">
+
+        {/* Body */}
+        <div style={{ padding: '24px' }}>
           {children}
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

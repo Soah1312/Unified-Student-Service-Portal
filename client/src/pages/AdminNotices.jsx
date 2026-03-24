@@ -14,65 +14,59 @@ export default function AdminNotices() {
     setLoading(true);
     try {
       const res = await noticeService.getNotices();
-      if (res.success) {
-        setNotices(res.data);
-      }
-    } catch (err) {
-      console.error('Error fetching notices', err);
-    }
+      if (res.success) setNotices(res.data);
+    } catch (err) { console.error(err); }
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchNotices();
-  }, []);
+  useEffect(() => { fetchNotices(); }, []);
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this notice?")) {
+    if (window.confirm('Delete this notice?')) {
       const res = await noticeService.deleteNotice(id);
-      if (res.success) {
-        setNotices(prev => prev.filter(n => n.id !== id));
-      } else {
-        alert(res.message || "Failed to delete notice");
-      }
+      if (res.success) setNotices(prev => prev.filter(n => n.id !== id));
+      else alert(res.message || 'Failed to delete');
     }
   };
 
-  const handleEdit = (notice) => {
-    navigate(`/admin/notices/edit/${notice.id}`, { state: { notice } });
-  };
+  const handleEdit = (notice) => navigate(`/admin/notices/edit/${notice.id}`, { state: { notice } });
+
+  if (loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 300, fontFamily: 'var(--font-display)', fontSize: 18, color: 'var(--text-muted)', fontStyle: 'italic' }}>
+      Loading notices...
+    </div>
+  );
 
   return (
-    <div className="flex flex-col gap-6">
-      <header className="flex justify-between items-end">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 32, fontFamily: 'var(--font-ui)' }}>
+
+      {/* Header */}
+      <header style={{ borderBottom: '3px solid var(--border-dark)', paddingBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 16 }}>
         <div>
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
-            Notices Management
+          <div className="editorial-label-accent" style={{ marginBottom: 8 }}>Admin · Notices</div>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1, letterSpacing: '-0.03em' }}>
+            Notice Management
           </h1>
-          <p className="text-slate-400 mt-1">Create, update, and manage student portal notices here.</p>
+          <p style={{ marginTop: 8, fontSize: 14, color: 'var(--text-muted)', fontFamily: 'var(--font-body)', fontStyle: 'italic' }}>
+            Publish and manage official portal notices.
+          </p>
         </div>
-        
-        <Button onClick={() => navigate('/admin/notices/create')} variant="primary" className="flex items-center gap-2">
-          <Plus size={18} /> New Notice
+        <Button onClick={() => navigate('/admin/notices/create')} variant="primary" icon={<Plus size={16} />}>
+          New Notice
         </Button>
       </header>
 
-      {loading ? (
-        <div className="text-slate-400 text-center py-10">Loading notices...</div>
-      ) : notices.length === 0 ? (
-        <div className="text-slate-400 border border-slate-800 bg-slate-900/50 rounded-lg text-center py-12 flex flex-col items-center">
-          <p className="mb-4">No notices found.</p>
-          <Button onClick={() => navigate('/admin/notices/create')} variant="secondary">Create One Now</Button>
+      {notices.length === 0 ? (
+        <div style={{ padding: '64px 24px', textAlign: 'center', border: '1px solid var(--border)', background: 'var(--bg-card)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontStyle: 'italic', color: 'var(--text-muted)' }}>The notice board is empty.</p>
+          <Button onClick={() => navigate('/admin/notices/create')} variant="secondary">
+            Publish the first notice →
+          </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 16 }}>
           {notices.map(notice => (
-            <NoticeCard 
-              key={notice.id} 
-              notice={notice} 
-              onEdit={handleEdit} 
-              onDelete={handleDelete} 
-            />
+            <NoticeCard key={notice.id} notice={notice} onEdit={handleEdit} onDelete={handleDelete} />
           ))}
         </div>
       )}

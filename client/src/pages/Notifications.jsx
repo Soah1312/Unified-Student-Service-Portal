@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
-import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import { Bell, Check, Info, AlertTriangle, Calendar, Award } from 'lucide-react';
+
+const iconMap = {
+  notice: <Info size={18} />,
+  event:  <Calendar size={18} />,
+  alert:  <AlertTriangle size={18} />,
+  system: <Award size={18} />,
+};
 
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchNotifications();
-  }, []);
+  useEffect(() => { fetchNotifications(); }, []);
 
   const fetchNotifications = async () => {
     const res = await api.getNotifications();
@@ -21,89 +25,94 @@ export default function Notifications() {
 
   const markAsRead = async (id) => {
     const res = await api.markNotificationRead(id);
-    if (res?.success) {
-      setNotifications(notifications.map(n => n.id === id ? { ...n, read: true } : n));
-    }
+    if (res?.success) setNotifications(n => n.map(x => x.id === id ? { ...x, read: true } : x));
   };
 
   const markAllAsRead = async () => {
-    const res = await api.markAllNotificationsRead();
-    if (res?.success) {
-      setNotifications(notifications.map(n => ({ ...n, read: true })));
-    }
-  };
-
-  const getIcon = (type) => {
-    switch(type) {
-      case 'notice': return <Info size={20} className="text-blue-400" />;
-      case 'event': return <Calendar size={20} className="text-emerald-400" />;
-      case 'alert': return <AlertTriangle size={20} className="text-amber-400" />;
-      case 'system': return <Award size={20} className="text-indigo-400" />;
-      default: return <Bell size={20} className="text-slate-400" />;
-    }
+    const res = await api.markAllNotificationsRead?.();
+    if (res?.success) setNotifications(n => n.map(x => ({ ...x, read: true })));
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  if (loading) return <div className="text-center p-10 text-slate-400">Loading notifications...</div>;
+  if (loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 300, fontFamily: 'var(--font-display)', fontSize: 18, color: 'var(--text-muted)', fontStyle: 'italic' }}>
+      Loading notifications...
+    </div>
+  );
 
   return (
-    <div className="flex flex-col gap-6 max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-2 border-b border-[rgba(255,255,255,0.1)] pb-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 32, maxWidth: 860, fontFamily: 'var(--font-ui)' }}>
+
+      {/* Header */}
+      <div style={{ borderBottom: '3px solid var(--border-dark)', paddingBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 16 }}>
         <div>
-           <h1 className="text-3xl font-bold flex items-center gap-3">
-             Notifications
-             {unreadCount > 0 && <Badge variant="danger" className="ml-2 text-sm">{unreadCount} New</Badge>}
-           </h1>
+          <div className="editorial-label-accent" style={{ marginBottom: 8 }}>Inbox</div>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1, letterSpacing: '-0.03em', display: 'flex', alignItems: 'center', gap: 16 }}>
+            Notifications
+            {unreadCount > 0 && <Badge variant="danger">{unreadCount} new</Badge>}
+          </h1>
         </div>
         {unreadCount > 0 && (
-          <Button variant="secondary" size="sm" onClick={markAllAsRead}>
-            <Check size={16} className="mr-2" /> Mark all read
+          <Button variant="secondary" size="sm" onClick={markAllAsRead} icon={<Check size={14} />}>
+            Mark all read
           </Button>
         )}
       </div>
 
-      <div className="flex flex-col gap-3">
-        {notifications.length === 0 ? (
-          <div className="text-center p-12 text-slate-400 bg-[rgba(255,255,255,0.02)] rounded-lg border border-[rgba(255,255,255,0.05)]">
-            <Bell size={48} className="mx-auto text-slate-600 mb-4 opacity-50" />
-            <p className="text-lg font-medium text-slate-300">No notifications yet</p>
-            <p className="text-sm">You're all caught up!</p>
-          </div>
-        ) : (
-          notifications.map((notif) => (
-            <Card 
+      {notifications.length === 0 ? (
+        <div style={{ padding: '64px 24px', textAlign: 'center', border: '1px solid var(--border)', background: 'var(--bg-card)' }}>
+          <Bell size={40} style={{ margin: '0 auto 16px', color: 'var(--text-muted)', opacity: 0.4 }} />
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontStyle: 'italic', color: 'var(--text-muted)' }}>Your inbox is clear.</p>
+        </div>
+      ) : (
+        <div style={{ border: '1px solid var(--border)' }}>
+          {notifications.map((notif, i) => (
+            <div
               key={notif.id}
-              padding="p-4"
-              className={`flex gap-4 relative overflow-hidden transition-all ${notif.read ? 'opacity-70 grayscale-[20%]' : 'border-l-4 border-l-blue-500 bg-[rgba(59,130,246,0.05)]'}`}
+              style={{
+                display: 'flex', gap: 16, padding: '20px 24px',
+                borderBottom: i < notifications.length - 1 ? '1px solid var(--border)' : 'none',
+                borderLeft: !notif.read ? '3px solid var(--accent)' : '3px solid transparent',
+                background: !notif.read ? 'rgba(255,51,51,0.02)' : 'var(--bg-card)',
+                opacity: notif.read ? 0.65 : 1,
+                transition: 'background 0.15s',
+              }}
             >
-              <div className="mt-1 bg-[rgba(255,255,255,0.05)] p-2 rounded-full h-fit border border-[rgba(255,255,255,0.05)]">
-                {getIcon(notif.type)}
+              <div style={{
+                width: 36, height: 36, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: '1px solid var(--border)', background: 'var(--bg-secondary)',
+                color: 'var(--text-secondary)',
+              }}>
+                {iconMap[notif.type] || <Bell size={18} />}
               </div>
-              <div className="flex-1">
-                <div className="flex justify-between items-start mb-1">
-                  <h3 className={`font-semibold ${notif.read ? 'text-slate-300' : 'text-white'}`}>{notif.title}</h3>
-                  <span className="text-xs text-slate-500 whitespace-nowrap ml-4">
-                    {new Date(notif.timestamp).toLocaleString([], {month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'})}
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 6 }}>
+                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.2 }}>{notif.title}</h3>
+                  <span className="editorial-label" style={{ color: 'var(--text-muted)', flexShrink: 0 }}>
+                    {new Date(notif.timestamp).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
-                <p className="text-sm text-slate-400 mb-2">{notif.message}</p>
-                
-                <div className="flex gap-2">
-                  <a href={notif.link} className="text-xs px-3 py-1 bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] rounded transition-colors text-blue-300">
-                    View Details
-                  </a>
+                <p style={{ fontSize: 13, fontFamily: 'var(--font-body)', color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: 12 }}>{notif.message}</p>
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                  {notif.link && (
+                    <a href={notif.link} style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent)', borderBottom: '1px solid rgba(255,51,51,0.3)' }}>
+                      View details →
+                    </a>
+                  )}
                   {!notif.read && (
-                    <button onClick={() => markAsRead(notif.id)} className="text-xs px-3 py-1 text-slate-400 hover:text-white transition-colors">
-                      Mark as read
+                    <button onClick={() => markAsRead(notif.id)} style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.06em', textTransform: 'uppercase', background: 'none', border: 'none', cursor: 'pointer', transition: 'color 0.2s' }}
+                      onMouseEnter={e => e.target.style.color = 'var(--text-primary)'}
+                      onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}>
+                      Mark read
                     </button>
                   )}
                 </div>
               </div>
-            </Card>
-          ))
-        )}
-      </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

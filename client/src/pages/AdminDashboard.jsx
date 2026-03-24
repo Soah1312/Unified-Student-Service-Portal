@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { noticeService } from '../services/noticeService';
-import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import { FileText, Grid, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -12,76 +11,87 @@ export default function AdminDashboard() {
     const fetchData = async () => {
       try {
         const noticesRes = await noticeService.getNotices();
-        setData({ 
-          notices: noticesRes?.data || [], 
-          loading: false 
-        });
-      } catch (err) {
-        console.error("Failed to load dashboard info");
+        setData({ notices: noticesRes?.data || [], loading: false });
+      } catch {
         setData(prev => ({ ...prev, loading: false }));
       }
     };
     fetchData();
   }, []);
 
-  if (data.loading) return <div className="flex justify-center p-8">Loading dashboard...</div>;
+  if (data.loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 300, fontFamily: 'var(--font-display)', fontSize: 18, color: 'var(--text-muted)', fontStyle: 'italic' }}>
+      Loading dashboard...
+    </div>
+  );
 
   const totalNotices = data.notices.length;
-  const recentNotices = [...data.notices].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 3);
-  
-  // Basic category breakdown
-  const categoryCounts = data.notices.reduce((acc, curr) => {
-    acc[curr.category] = (acc[curr.category] || 0) + 1;
-    return acc;
-  }, {});
+  const recentNotices = [...data.notices].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+  const categoryCounts = data.notices.reduce((acc, c) => { acc[c.category] = (acc[c.category] || 0) + 1; return acc; }, {});
 
   return (
-    <div className="flex flex-col gap-6">
-      <header>
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
-          Admin Dashboard
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 40, fontFamily: 'var(--font-ui)' }}>
+
+      {/* Header */}
+      <header style={{ borderBottom: '3px solid var(--border-dark)', paddingBottom: 24 }}>
+        <div className="editorial-label-accent" style={{ marginBottom: 8 }}>Admin Overview</div>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1, letterSpacing: '-0.03em' }}>
+          Dashboard
         </h1>
-        <p className="text-slate-400 mt-1">Overview of your portal's content.</p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-br from-blue-600/20 to-transparent border-blue-500/20 flex flex-col items-center justify-center p-6 min-h-[160px]">
-          <FileText size={40} className="text-blue-400 mb-2" />
-          <p className="text-4xl font-bold">{totalNotices}</p>
-          <p className="text-slate-400 font-medium">Total Notices</p>
-        </Card>
-
-        {Object.entries(categoryCounts).slice(0, 2).map(([cat, count], idx) => (
-          <Card key={cat} className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] flex flex-col items-center justify-center p-6 min-h-[160px]">
-             <Grid size={32} className={`mb-2 ${idx === 0 ? 'text-emerald-400' : 'text-amber-400'}`} />
-             <p className="text-3xl font-bold">{count}</p>
-             <p className="text-slate-400 font-medium">{cat}</p>
-          </Card>
+      {/* Stats row */}
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(3, 1 + Object.keys(categoryCounts).slice(0, 2).length)}, 1fr)`, gap: 0, border: '1px solid var(--border)' }}>
+        <div style={{ padding: '32px 24px', textAlign: 'center', borderRight: '1px solid var(--border)', background: 'var(--bg-card)' }}>
+          <FileText size={24} style={{ margin: '0 auto 12px', color: 'var(--text-muted)' }} />
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 48, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>{totalNotices}</div>
+          <div className="editorial-label" style={{ marginTop: 8 }}>Total Notices</div>
+        </div>
+        {Object.entries(categoryCounts).slice(0, 2).map(([cat, count], i, arr) => (
+          <div key={cat} style={{ padding: '32px 24px', textAlign: 'center', borderRight: i < arr.length - 1 ? '1px solid var(--border)' : 'none', background: 'var(--bg-card)' }}>
+            <Grid size={24} style={{ margin: '0 auto 12px', color: i === 0 ? '#2E7D32' : '#B45309' }} />
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 48, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>{count}</div>
+            <div className="editorial-label" style={{ marginTop: 8 }}>{cat}</div>
+          </div>
         ))}
       </div>
 
-      <Card className="flex flex-col gap-4 p-6">
-        <div className="flex justify-between items-center border-b border-[rgba(255,255,255,0.1)] pb-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2"><Calendar size={20} className="text-blue-400"/> Latest Notices</h2>
-          <Link to="/admin/notices" className="text-sm text-blue-400 hover:text-blue-300">View All</Link>
+      {/* Recent notices table */}
+      <div style={{ border: '1px solid var(--border)' }}>
+        <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)', background: 'var(--bg-card)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <div className="editorial-label-accent" style={{ marginBottom: 4 }}>Recent</div>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+              Latest Notices
+            </h2>
+          </div>
+          <Link to="/admin/notices" style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--accent)', borderBottom: '1px solid rgba(255,51,51,0.3)' }}>
+            Manage all →
+          </Link>
         </div>
-        
-        <div className="flex flex-col gap-4">
-          {recentNotices.length === 0 ? (
-             <p className="text-slate-400 text-center py-4">No notices found.</p>
-          ) : recentNotices.map(notice => (
-            <div key={notice.id} className="p-4 rounded-lg bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] flex justify-between items-start">
-              <div>
-                <h3 className="font-medium text-blue-100">{notice.title}</h3>
-                <p className="text-sm text-slate-400 mt-1 line-clamp-1">{notice.content}</p>
-              </div>
-              <Badge variant={notice.priority === 'high' ? 'danger' : notice.priority === 'medium' ? 'warning' : 'default'} className="whitespace-nowrap ml-4">
-                {notice.category}
-              </Badge>
+        {recentNotices.length === 0 ? (
+          <div style={{ padding: '40px', textAlign: 'center', fontFamily: 'var(--font-display)', fontSize: 16, fontStyle: 'italic', color: 'var(--text-muted)' }}>No notices published yet.</div>
+        ) : recentNotices.map((notice, i) => (
+          <div key={notice.id} style={{
+            display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16,
+            padding: '16px 24px',
+            borderBottom: i < recentNotices.length - 1 ? '1px solid var(--border)' : 'none',
+            background: 'var(--bg-card)',
+            transition: 'background 0.15s',
+          }}
+            onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-secondary)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'var(--bg-card)'}
+          >
+            <div style={{ flex: 1 }}>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>{notice.title}</h3>
+              <p style={{ fontSize: 12, fontFamily: 'var(--font-body)', color: 'var(--text-secondary)', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{notice.content}</p>
             </div>
-          ))}
-        </div>
-      </Card>
+            <Badge variant={notice.priority === 'high' ? 'danger' : notice.priority === 'medium' ? 'warning' : 'default'}>
+              {notice.category}
+            </Badge>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

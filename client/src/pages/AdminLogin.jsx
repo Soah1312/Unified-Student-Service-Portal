@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminService } from '../services/adminService';
 import Button from '../components/ui/Button';
-import Card from '../components/ui/Card';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
@@ -14,50 +13,76 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
     const res = await adminService.login(password);
     if (res.success) {
       localStorage.setItem('isAdmin', 'true');
       navigate('/admin/dashboard');
     } else {
-      setError(res.message || 'Invalid password');
+      setError(res.message || 'Invalid credentials');
     }
     setLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-      <Card className="max-w-md w-full p-8 border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.02)]">
-        <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 text-center mb-6">
-          Admin Portal Login
-        </h1>
-        
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-3 rounded-lg mb-6 text-sm text-center">
-            {error}
-          </div>
-        )}
+    <div style={{
+      minHeight: '100dvh', background: 'var(--bg-dark)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: 24, fontFamily: 'var(--font-ui)',
+    }}>
+      <div style={{ width: '100%', maxWidth: 420 }}>
+        {/* Masthead */}
+        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+          <div className="editorial-label-accent" style={{ marginBottom: 12, color: 'rgba(245,245,240,0.4)' }}>Restricted Access</div>
+          <h1 style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 32, fontWeight: 900,
+            color: 'var(--text-invert)',
+            letterSpacing: '-0.03em', lineHeight: 1.05,
+          }}>
+            THE CAMPUS<span style={{ color: 'var(--accent)' }}>·</span>PORTAL
+          </h1>
+          <div style={{ width: 40, height: 3, background: 'var(--accent)', margin: '16px auto 0' }} />
+        </div>
 
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1 flex justify-between">
-              Password <span className="text-xs text-slate-500 font-normal">Hint: admin123</span>
-            </label>
-            <input 
-              type="password" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              required 
-              autoFocus
-              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
-              placeholder="Enter admin password"
-            />
+        {/* Form card */}
+        <div style={{ background: 'var(--bg)', border: '2px solid rgba(245,245,240,0.1)', padding: '36px' }}>
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Admin Sign In</div>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', fontFamily: 'var(--font-body)', fontStyle: 'italic' }}>Enter your credentials to access the admin console.</p>
           </div>
-          <Button type="submit" variant="primary" className="w-full py-3" isLoading={loading}>
-            Login to Admin
-          </Button>
-        </form>
-      </Card>
+
+          {error && (
+            <div style={{ padding: '12px 16px', borderLeft: '3px solid var(--accent)', background: 'rgba(255,51,51,0.04)', marginBottom: 24 }}>
+              <p style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600 }}>{error}</p>
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div>
+              <label className="editorial-label-field" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                Password
+                <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>Hint: admin123</span>
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                autoFocus
+                placeholder="Enter admin password"
+                className="editorial-input"
+              />
+            </div>
+            <Button type="submit" variant="primary" fullWidth isLoading={loading}>
+              Sign in to console →
+            </Button>
+          </form>
+        </div>
+
+        <p style={{ textAlign: 'center', marginTop: 20, fontSize: 12, color: 'rgba(245,245,240,0.2)', fontFamily: 'var(--font-ui)' }}>
+          © 2025 Unified Student Service Portal
+        </p>
+      </div>
     </div>
   );
 }

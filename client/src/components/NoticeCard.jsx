@@ -1,38 +1,78 @@
 import React from 'react';
 import { Edit2, Trash2 } from 'lucide-react';
 import Badge from './ui/Badge';
-import Card from './ui/Card';
 
 export default function NoticeCard({ notice, onEdit, onDelete }) {
+  const priorityVariant = notice.priority === 'high' ? 'danger' : notice.priority === 'medium' ? 'warning' : 'default';
+
   return (
-    <Card className="flex flex-col gap-3 p-4 bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)]">
-      <div className="flex justify-between items-start">
-        <div>
-          <h3 className="font-semibold text-lg text-white">{notice.title}</h3>
-          <div className="flex items-center gap-2 mt-1">
-            <Badge variant={notice.priority === 'high' ? 'danger' : notice.priority === 'medium' ? 'warning' : 'default'}>
-              {notice.category}
-            </Badge>
-            <span className="text-xs text-slate-400">{notice.date}</span>
+    <div style={{
+      background: 'var(--bg)',
+      border: '1px solid var(--border)',
+      borderTop: notice.priority === 'high' ? '3px solid var(--accent)' : '1px solid var(--border)',
+      padding: '24px',
+      transition: 'border-color 0.2s',
+    }}
+      onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-dark)'}
+      onMouseLeave={e => e.currentTarget.style.borderColor = notice.priority === 'high' ? 'var(--accent)' : 'var(--border)'}
+    >
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, marginBottom: 16 }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+            <Badge variant={priorityVariant}>{notice.category}</Badge>
+            <span className="editorial-label">{notice.date}</span>
           </div>
+          <h3 style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 18, fontWeight: 700,
+            color: 'var(--text-primary)',
+            lineHeight: 1.2, letterSpacing: '-0.01em',
+          }}>
+            {notice.title}
+          </h3>
         </div>
-        
-        <div className="flex gap-2">
-          <button 
+
+        <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
+          <button
             onClick={() => onEdit(notice)}
-            className="p-2 text-blue-400 hover:bg-blue-400/10 rounded-lg transition-colors"
+            title="Edit"
+            style={{
+              padding: '8px', color: 'var(--text-muted)',
+              border: '1px solid transparent', cursor: 'pointer',
+              transition: 'all 0.15s', background: 'transparent',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}
           >
-            <Edit2 size={18} />
+            <Edit2 size={16} />
           </button>
-          <button 
+          <button
             onClick={() => onDelete(notice.id)}
-            className="p-2 text-red-400 hover:bg-red-400/10 rounded-lg transition-colors"
+            title="Delete"
+            style={{
+              padding: '8px', color: 'var(--text-muted)',
+              border: '1px solid transparent', cursor: 'pointer',
+              transition: 'all 0.15s', background: 'transparent',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.color = 'var(--accent)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.color = 'var(--text-muted)'; }}
           >
-            <Trash2 size={18} />
+            <Trash2 size={16} />
           </button>
         </div>
       </div>
-      <p className="text-sm text-slate-300 mt-2 line-clamp-3">{notice.content}</p>
-    </Card>
+
+      <hr className="editorial-rule" style={{ margin: '0 0 12px' }} />
+
+      <p style={{
+        fontFamily: 'var(--font-body)',
+        fontSize: 14, lineHeight: 1.75,
+        color: 'var(--text-secondary)',
+        display: '-webkit-box', WebkitLineClamp: 3,
+        WebkitBoxOrient: 'vertical', overflow: 'hidden',
+      }}>
+        {notice.content}
+      </p>
+    </div>
   );
 }

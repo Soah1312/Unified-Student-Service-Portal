@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
-import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Modal from '../components/ui/Modal';
 import CommentSection from '../components/ui/CommentSection';
@@ -12,9 +11,7 @@ export default function Notices() {
   const [search, setSearch] = useState('');
   const [selectedNotice, setSelectedNotice] = useState(null);
 
-  useEffect(() => {
-    fetchNotices();
-  }, []);
+  useEffect(() => { fetchNotices(); }, []);
 
   const fetchNotices = async () => {
     const res = await api.getNotices();
@@ -24,105 +21,120 @@ export default function Notices() {
 
   const handleAddComment = async (text) => {
     if (!selectedNotice) return;
-    const res = await api.addComment(selectedNotice.id, "Aarav Singh", text);
+    const res = await api.addComment(selectedNotice.id, 'Aarav Singh', text);
     if (res?.success) {
-      const updatedNotice = { ...selectedNotice, comments: [...selectedNotice.comments, res.data] };
-      setSelectedNotice(updatedNotice);
-      setNotices(notices.map(n => n.id === updatedNotice.id ? updatedNotice : n));
+      const updated = { ...selectedNotice, comments: [...selectedNotice.comments, res.data] };
+      setSelectedNotice(updated);
+      setNotices(notices.map(n => n.id === updated.id ? updated : n));
     }
   };
 
-  const filteredNotices = notices.filter(n => 
-    n.title.toLowerCase().includes(search.toLowerCase()) || 
+  const filtered = notices.filter(n =>
+    n.title.toLowerCase().includes(search.toLowerCase()) ||
     n.content.toLowerCase().includes(search.toLowerCase()) ||
     n.category.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (loading) return <div className="text-center p-10 text-slate-400">Loading notices...</div>;
+  if (loading) return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 300, fontFamily: 'var(--font-display)', fontSize: 18, color: 'var(--text-muted)', fontStyle: 'italic' }}>
+      Fetching notices...
+    </div>
+  );
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h1 className="text-3xl font-bold">Official Notices</h1>
-        
-        <div className="flex w-full md:w-auto gap-2">
-          <div className="relative w-full md:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <input 
-              type="text" 
-              placeholder="Search notices..." 
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.1)] rounded-lg text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
-            />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 32, fontFamily: 'var(--font-ui)' }}>
+
+      {/* Header */}
+      <div style={{ borderBottom: '3px solid var(--border-dark)', paddingBottom: 24 }}>
+        <div className="editorial-label-accent" style={{ marginBottom: 8 }}>Official Bulletin</div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 16 }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1, letterSpacing: '-0.03em' }}>
+            Notices
+          </h1>
+          {/* Search bar */}
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <div style={{ position: 'relative' }}>
+              <Search style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} size={16} />
+              <input
+                type="text"
+                placeholder="Search notices..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="editorial-input"
+                style={{ paddingLeft: 38, width: 260 }}
+              />
+            </div>
+            <button style={{ padding: '10px 12px', background: 'var(--bg-card)', border: '1.5px solid var(--border)', cursor: 'pointer', color: 'var(--text-muted)', transition: 'all 0.2s' }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-dark)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
+              <Filter size={16} />
+            </button>
           </div>
-          <button className="p-2 border border-[rgba(255,255,255,0.1)] rounded-lg bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] transition-colors">
-            <Filter size={20} className="text-slate-300" />
-          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4">
-        {filteredNotices.length === 0 ? (
-          <div className="text-center p-10 text-slate-400 bg-[rgba(255,255,255,0.02)] rounded-lg border border-[rgba(255,255,255,0.05)]">
-            No notices found matching "{search}"
-          </div>
-        ) : (
-          filteredNotices.map((notice) => (
-            <Card 
-              key={notice.id} 
-              hover={true} 
+      {/* Notice list */}
+      {filtered.length === 0 ? (
+        <div style={{ padding: '48px', textAlign: 'center', border: '1px solid var(--border)', background: 'var(--bg-card)', fontFamily: 'var(--font-display)', fontSize: 18, fontStyle: 'italic', color: 'var(--text-muted)' }}>
+          No notices found matching "{search}"
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 0, border: '1px solid var(--border)' }}>
+          {filtered.map((notice, i) => (
+            <div
+              key={notice.id}
               onClick={() => setSelectedNotice(notice)}
-              className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center"
+              style={{
+                display: 'flex', gap: 16, justifyContent: 'space-between', alignItems: 'flex-start',
+                padding: '20px 24px',
+                borderBottom: i < filtered.length - 1 ? '1px solid var(--border)' : 'none',
+                borderLeft: notice.priority === 'high' ? '3px solid var(--accent)' : '3px solid transparent',
+                background: 'var(--bg-card)', cursor: 'pointer',
+                transition: 'background 0.15s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-secondary)'}
+              onMouseLeave={e => e.currentTarget.style.background = 'var(--bg-card)'}
             >
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <Badge variant={notice.priority === 'high' ? 'danger' : notice.priority === 'medium' ? 'warning' : 'default'}>
-                    {notice.category}
-                  </Badge>
-                  <span className="text-xs text-slate-400">{notice.date} • By {notice.author}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                  <Badge variant={notice.priority === 'high' ? 'danger' : notice.priority === 'medium' ? 'warning' : 'default'}>{notice.category}</Badge>
+                  <span className="editorial-label">{notice.date} · By {notice.author}</span>
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-blue-400 transition-colors">{notice.title}</h3>
-                <p className="text-sm text-slate-400 line-clamp-2 md:line-clamp-1">{notice.content}</p>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em', lineHeight: 1.2, marginBottom: 6 }}>
+                  {notice.title}
+                </h3>
+                <p style={{ fontSize: 13, fontFamily: 'var(--font-body)', color: 'var(--text-secondary)', lineHeight: 1.7, display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                  {notice.content}
+                </p>
               </div>
-              <div className="flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors shrink-0">
-                <MessageSquare size={18} />
-                <span className="text-sm font-medium">{notice.comments?.length || 0}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)', flexShrink: 0 }}>
+                <MessageSquare size={16} />
+                <span style={{ fontSize: 12, fontWeight: 600 }}>{notice.comments?.length || 0}</span>
               </div>
-            </Card>
-          ))
-        )}
-      </div>
-
-      <Modal 
-        isOpen={!!selectedNotice} 
-        onClose={() => setSelectedNotice(null)}
-        title={selectedNotice?.category + ' Notice'}
-      >
-        {selectedNotice && (
-          <div className="flex flex-col gap-4">
-            <div>
-              <div className="flex justify-between items-start mb-2">
-                <h2 className="text-2xl font-bold text-white">{selectedNotice.title}</h2>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-slate-400 mb-4 pb-4 border-b border-[rgba(255,255,255,0.1)]">
-                <span>By {selectedNotice.author}</span>
-                <span>•</span>
-                <span>{selectedNotice.date}</span>
-                <span>•</span>
-                <Badge variant={selectedNotice.priority === 'high' ? 'danger' : selectedNotice.priority === 'medium' ? 'warning' : 'default'}>
-                  {selectedNotice.priority} priority
-                </Badge>
-              </div>
-              <p className="text-slate-200 leading-relaxed whitespace-pre-wrap">
-                {selectedNotice.content}
-              </p>
             </div>
-            
-            <CommentSection 
-              comments={selectedNotice.comments} 
-              onAddComment={handleAddComment} 
-            />
+          ))}
+        </div>
+      )}
+
+      {/* Modal */}
+      <Modal isOpen={!!selectedNotice} onClose={() => setSelectedNotice(null)} title={selectedNotice?.category + ' Notice'}>
+        {selectedNotice && (
+          <div>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 24, fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.02em', lineHeight: 1.15, marginBottom: 12 }}>
+              {selectedNotice.title}
+            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid var(--border)' }}>
+              <span className="editorial-label">By {selectedNotice.author}</span>
+              <span style={{ color: 'var(--border)' }}>·</span>
+              <span className="editorial-label">{selectedNotice.date}</span>
+              <Badge variant={selectedNotice.priority === 'high' ? 'danger' : selectedNotice.priority === 'medium' ? 'warning' : 'default'}>
+                {selectedNotice.priority}
+              </Badge>
+            </div>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 15, lineHeight: 1.85, color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
+              {selectedNotice.content}
+            </p>
+            <CommentSection comments={selectedNotice.comments} onAddComment={handleAddComment} />
           </div>
         )}
       </Modal>
