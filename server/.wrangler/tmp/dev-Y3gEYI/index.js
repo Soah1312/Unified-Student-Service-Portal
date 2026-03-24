@@ -2260,6 +2260,40 @@ var addComment = /* @__PURE__ */ __name((noticeId, { user, text }) => {
   notice.comments.push(comment);
   return comment;
 }, "addComment");
+var nextNoticeId = 6;
+var createNotice = /* @__PURE__ */ __name((data) => {
+  const newNotice = {
+    id: nextNoticeId++,
+    title: data.title || "Untitled",
+    category: data.category || "General",
+    priority: data.priority || "medium",
+    content: data.content || "",
+    date: (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
+    author: data.author || "Admin",
+    comments: []
+  };
+  notices.unshift(newNotice);
+  return newNotice;
+}, "createNotice");
+var updateNotice = /* @__PURE__ */ __name((id, data) => {
+  const noticeIndex = notices.findIndex((n) => n.id === parseInt(id));
+  if (noticeIndex === -1)
+    return null;
+  notices[noticeIndex] = {
+    ...notices[noticeIndex],
+    ...data,
+    id: parseInt(id)
+    // Ensure ID doesn't change
+  };
+  return notices[noticeIndex];
+}, "updateNotice");
+var deleteNotice = /* @__PURE__ */ __name((id) => {
+  const noticeIndex = notices.findIndex((n) => n.id === parseInt(id));
+  if (noticeIndex === -1)
+    return false;
+  notices.splice(noticeIndex, 1);
+  return true;
+}, "deleteNotice");
 
 // src/routes/notices.js
 var notices2 = new Hono2();
@@ -2272,6 +2306,35 @@ notices2.get("/:id", (c) => {
   if (!notice)
     return c.json({ success: false, message: "Notice not found" }, 404);
   return c.json({ success: true, data: notice });
+});
+notices2.post("/", async (c) => {
+  try {
+    const data = await c.req.json();
+    if (!data.title || !data.content) {
+      return c.json({ success: false, message: "Title and content are required" }, 400);
+    }
+    const newNotice = createNotice(data);
+    return c.json({ success: true, data: newNotice }, 201);
+  } catch (e) {
+    return c.json({ success: false, message: "Invalid JSON body" }, 400);
+  }
+});
+notices2.put("/:id", async (c) => {
+  try {
+    const data = await c.req.json();
+    const notice = updateNotice(c.req.param("id"), data);
+    if (!notice)
+      return c.json({ success: false, message: "Notice not found" }, 404);
+    return c.json({ success: true, data: notice });
+  } catch (e) {
+    return c.json({ success: false, message: "Invalid JSON body" }, 400);
+  }
+});
+notices2.delete("/:id", (c) => {
+  const success = deleteNotice(c.req.param("id"));
+  if (!success)
+    return c.json({ success: false, message: "Notice not found" }, 404);
+  return c.json({ success: true, message: "Notice deleted successfully" });
 });
 notices2.post("/:id/comments", async (c) => {
   try {
@@ -2512,6 +2575,21 @@ users2.patch("/notifications/read-all", (c) => {
 });
 var users_default = users2;
 
+// src/routes/admin.js
+var admin = new Hono2();
+admin.post("/login", async (c) => {
+  try {
+    const { password } = await c.req.json();
+    if (password === "admin123") {
+      return c.json({ success: true, message: "Admin login successful" });
+    }
+    return c.json({ success: false, message: "Invalid password" }, 401);
+  } catch (e) {
+    return c.json({ success: false, message: "Invalid JSON body" }, 400);
+  }
+});
+var admin_default = admin;
+
 // src/index.js
 var app = new Hono2();
 app.use("*", cors({
@@ -2522,6 +2600,7 @@ app.route("/api/notices", notices_default);
 app.route("/api/events", events_default);
 app.route("/api/auth", auth_default);
 app.route("/api/users", users_default);
+app.route("/api/admin", admin_default);
 app.get("/api/health", (c) => {
   return c.json({
     success: true,
