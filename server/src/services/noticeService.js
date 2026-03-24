@@ -1,4 +1,4 @@
-const notices = [
+let notices = [
   {
     id: 1,
     title: "End Semester Examination Schedule Released",
@@ -99,4 +99,41 @@ const addComment = (noticeId, { user, text }) => {
   return comment;
 };
 
-export { getAllNotices, getNoticeById, addComment };
+let nextNoticeId = 6;
+
+const createNotice = (data) => {
+  const newNotice = {
+    id: nextNoticeId++,
+    title: data.title || "Untitled",
+    category: data.category || "General",
+    priority: data.priority || "medium",
+    content: data.content || "",
+    date: new Date().toISOString().split('T')[0],
+    author: data.author || "Admin",
+    comments: [],
+  };
+  notices.unshift(newNotice); // Add to beginning
+  return newNotice;
+};
+
+const updateNotice = (id, data) => {
+  const noticeIndex = notices.findIndex((n) => n.id === parseInt(id));
+  if (noticeIndex === -1) return null;
+  
+  notices[noticeIndex] = {
+    ...notices[noticeIndex],
+    ...data,
+    id: parseInt(id) // Ensure ID doesn't change
+  };
+  return notices[noticeIndex];
+};
+
+const deleteNotice = (id) => {
+  const noticeIndex = notices.findIndex((n) => n.id === parseInt(id));
+  if (noticeIndex === -1) return false;
+  
+  notices.splice(noticeIndex, 1);
+  return true;
+};
+
+export { getAllNotices, getNoticeById, addComment, createNotice, updateNotice, deleteNotice };

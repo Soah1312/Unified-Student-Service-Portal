@@ -9,10 +9,17 @@ import Events from './pages/Events';
 import Notifications from './pages/Notifications';
 import Profile from './pages/Profile';
 
+// Admin layout and pages
+import AdminLayout from './components/layout/AdminLayout';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminNotices from './pages/AdminNotices';
+import CreateNotice from './pages/CreateNotice';
+
 export default function App() {
   return (
-    <Layout>
-      <Routes>
+    <Routes>
+      <Route element={<Layout />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/notices" element={<Notices />} />
         <Route path="/events" element={<Events />} />
@@ -24,7 +31,16 @@ export default function App() {
             <p className="text-slate-400">Page not found</p>
           </div>
         } />
-      </Routes>
-    </Layout>
+      </Route>
+      
+      {/* Admin Routes */}
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route element={<AdminLayout />}>
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/notices" element={<AdminNotices />} />
+        <Route path="/admin/notices/create" element={<CreateNotice />} />
+        <Route path="/admin/notices/edit/:id" element={<CreateNotice />} />
+      </Route>
+    </Routes>
   );
 }
