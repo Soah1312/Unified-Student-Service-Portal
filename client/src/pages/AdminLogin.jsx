@@ -4,6 +4,7 @@ import { adminService } from '../services/adminService';
 import Button from '../components/ui/Button';
 
 export default function AdminLogin() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,9 +14,8 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    const res = await adminService.login(password);
+    const res = await adminService.login(email, password);
     if (res.success) {
-      localStorage.setItem('isAdmin', 'true');
       navigate('/admin/dashboard');
     } else {
       setError(res.message || 'Invalid credentials');
@@ -31,7 +31,7 @@ export default function AdminLogin() {
     }}>
       <div style={{ width: '100%', maxWidth: 420 }}>
         {/* Masthead */}
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div className="editorial-label-accent" style={{ marginBottom: 12, color: 'rgba(245,245,240,0.4)' }}>Restricted Access</div>
           <h1 style={{
             fontFamily: 'var(--font-display)',
@@ -45,7 +45,7 @@ export default function AdminLogin() {
         </div>
 
         {/* Form card */}
-        <div style={{ background: 'var(--bg)', border: '2px solid rgba(245,245,240,0.1)', padding: '36px' }}>
+        <div style={{ background: 'var(--bg)', border: '2px solid rgba(245,245,240,0.1)', padding: '32px' }}>
           <div style={{ marginBottom: 24 }}>
             <div style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>Admin Sign In</div>
             <p style={{ fontSize: 13, color: 'var(--text-muted)', fontFamily: 'var(--font-body)', fontStyle: 'italic' }}>Enter your credentials to access the admin console.</p>
@@ -59,17 +59,25 @@ export default function AdminLogin() {
 
           <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             <div>
-              <label className="editorial-label-field" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                Password
-                <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>Hint: admin123</span>
-              </label>
+              <label className="editorial-label-field">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                autoFocus
+                placeholder="admin@example.com"
+                className="editorial-input"
+              />
+            </div>
+            <div>
+              <label className="editorial-label-field">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
-                autoFocus
-                placeholder="Enter admin password"
+                placeholder="Enter password"
                 className="editorial-input"
               />
             </div>

@@ -47,7 +47,7 @@ export default function AdminDashboard() {
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 48, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>{totalNotices}</div>
           <div className="editorial-label" style={{ marginTop: 8 }}>Total Notices</div>
         </div>
-        {Object.entries(categoryCounts).slice(0, 2).map(([cat, count], i, arr) => (
+        {Object.entries(categoryCounts).slice(0, 2).map(([cat, count], i) => (
           <div key={cat} style={{ padding: '32px 24px', textAlign: 'center', background: 'var(--bg-card)' }}>
             <Grid size={24} style={{ margin: '0 auto 12px', color: i === 0 ? '#2E7D32' : '#B45309' }} />
             <div style={{ fontFamily: 'var(--font-display)', fontSize: 48, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>{count}</div>
@@ -58,10 +58,10 @@ export default function AdminDashboard() {
 
       {/* Recent notices table */}
       <div style={{ border: '1px solid var(--border)' }}>
-        <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)', background: 'var(--bg-card)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--border)', background: 'var(--bg-card)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <div className="editorial-label-accent" style={{ marginBottom: 4 }}>Recent</div>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
               Latest Notices
             </h2>
           </div>
@@ -73,8 +73,8 @@ export default function AdminDashboard() {
           <div style={{ padding: '40px', textAlign: 'center', fontFamily: 'var(--font-display)', fontSize: 16, fontStyle: 'italic', color: 'var(--text-muted)' }}>No notices published yet.</div>
         ) : recentNotices.map((notice, i) => (
           <div key={notice.id} style={{
-            display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16,
-            padding: '16px 24px',
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16,
+            padding: '14px 24px',
             borderBottom: i < recentNotices.length - 1 ? '1px solid var(--border)' : 'none',
             background: 'var(--bg-card)',
             transition: 'background 0.15s',
@@ -82,9 +82,9 @@ export default function AdminDashboard() {
             onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-secondary)'}
             onMouseLeave={e => e.currentTarget.style.background = 'var(--bg-card)'}
           >
-            <div style={{ flex: 1 }}>
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>{notice.title}</h3>
-              <p style={{ fontSize: 12, fontFamily: 'var(--font-body)', color: 'var(--text-secondary)', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{notice.content}</p>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{notice.title}</h3>
+              <p style={{ fontSize: 12, fontFamily: 'var(--font-body)', color: 'var(--text-secondary)', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{notice.content}</p>
             </div>
             <Badge variant={notice.priority === 'high' ? 'danger' : notice.priority === 'medium' ? 'warning' : 'default'}>
               {notice.category}

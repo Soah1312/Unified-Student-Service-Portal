@@ -76,14 +76,6 @@ export default function NoticeForm({ initialData, onSubmit, onCancel, isSubmitti
         />
       </div>
 
-      {/* Priority indicator */}
-      {formData.priority === 'high' && (
-        <div style={{ padding: '10px 14px', borderLeft: '3px solid var(--accent)', background: 'rgba(255,51,51,0.04)', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 12, color: 'var(--accent)', fontFamily: 'var(--font-ui)', fontWeight: 600 }}>
-            HIGH PRIORITY — This notice will be highlighted in bold red across all views.
-          </span>
-        </div>
-      )}
 
       <hr className="editorial-rule" />
 

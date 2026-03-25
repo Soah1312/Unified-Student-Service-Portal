@@ -1,14 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import EventForm from '../components/EventForm';
-import { api } from '../services/api';
+import { createEvent } from '../services/eventService';
 
 export default function CreateEvent() {
   const navigate = useNavigate();
 
   const handleCreate = async (data) => {
     try {
-      const res = await api.createEvent(data);
+      const res = await createEvent(data);
       if (res?.success) {
         navigate('/events');
       } else {

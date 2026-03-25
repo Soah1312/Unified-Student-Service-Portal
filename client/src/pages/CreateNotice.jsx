@@ -31,7 +31,7 @@ export default function CreateNotice() {
   };
 
   return (
-    <div style={{ maxWidth: 720, display: 'flex', flexDirection: 'column', gap: 32, fontFamily: 'var(--font-ui)' }}>
+    <div style={{ maxWidth: 680, display: 'flex', flexDirection: 'column', gap: 32, fontFamily: 'var(--font-ui)' }}>
 
       {/* Header */}
       <header style={{ borderBottom: '3px solid var(--border-dark)', paddingBottom: 24 }}>
@@ -54,7 +54,7 @@ export default function CreateNotice() {
       )}
 
       {/* Form */}
-      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '32px' }}>
+      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '28px 32px' }}>
         <NoticeForm
           initialData={initialData}
           onSubmit={handleSubmit}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api } from '../services/api';
+import { userService } from '../services/userService';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import { Bell, Check, Info, AlertTriangle, Calendar, Award } from 'lucide-react';
@@ -18,19 +18,23 @@ export default function Notifications() {
   useEffect(() => { fetchNotifications(); }, []);
 
   const fetchNotifications = async () => {
-    const res = await api.getNotifications();
+    const res = await userService.getNotifications();
     if (res?.success) setNotifications(res.data);
     setLoading(false);
   };
 
   const markAsRead = async (id) => {
-    const res = await api.markNotificationRead(id);
-    if (res?.success) setNotifications(n => n.map(x => x.id === id ? { ...x, read: true } : x));
+    userService.markNotificationRead(id);
+    setNotifications(n => n.map(x => String(x.id) === String(id) ? { ...x, read: true } : x));
+    // Trigger storage event for Navbar
+    window.dispatchEvent(new Event('storage'));
   };
 
   const markAllAsRead = async () => {
-    const res = await api.markAllNotificationsRead?.();
-    if (res?.success) setNotifications(n => n.map(x => ({ ...x, read: true })));
+    userService.markAllNotificationsRead(notifications);
+    setNotifications(n => n.map(x => ({ ...x, read: true })));
+    // Trigger storage event for Navbar
+    window.dispatchEvent(new Event('storage'));
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;

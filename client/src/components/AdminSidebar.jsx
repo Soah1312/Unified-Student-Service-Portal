@@ -1,19 +1,20 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, LogOut, X } from 'lucide-react';
+import { LayoutDashboard, FileText, Calendar, LogOut, X, Database } from 'lucide-react';
+import { adminService } from '../services/adminService';
 
 export default function AdminSidebar({ mobileOpen, onClose }) {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAdmin');
+  const handleLogout = async () => {
+    await adminService.logout();
     navigate('/admin/login');
   };
 
   const content = (
     <>
       {/* Brand */}
-      <div style={{ padding: '28px 24px', borderBottom: '1px solid rgba(245,245,240,0.08)' }}>
+      <div style={{ padding: '24px 24px', borderBottom: '1px solid rgba(245,245,240,0.08)' }}>
         <div className="editorial-label-accent" style={{ marginBottom: 8 }}>Admin Console</div>
         <div style={{
           fontFamily: 'var(--font-display)',
@@ -29,6 +30,8 @@ export default function AdminSidebar({ mobileOpen, onClose }) {
         {[
           { to: '/admin/dashboard', label: 'Dashboard',   icon: <LayoutDashboard size={18} /> },
           { to: '/admin/notices',   label: 'Notices',      icon: <FileText size={18} />      },
+          { to: '/admin/events',    label: 'Events',       icon: <Calendar size={18} />      },
+          { to: '/admin/seed',      label: 'Seed Data',    icon: <Database size={18} />      },
         ].map(({ to, label, icon }) => (
           <NavLink
             key={to}
@@ -50,12 +53,12 @@ export default function AdminSidebar({ mobileOpen, onClose }) {
         ))}
       </nav>
 
-      <div style={{ padding: '16px 12px', borderTop: '1px solid rgba(245,245,240,0.08)' }}>
+      <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(245,245,240,0.08)' }}>
         <button
           onClick={handleLogout}
           style={{
             display: 'flex', alignItems: 'center', gap: 12,
-            width: '100%', padding: '12px 12px',
+            width: '100%', padding: '11px 16px',
             background: 'transparent',
             color: 'var(--accent)',
             fontSize: 13, fontWeight: 600,

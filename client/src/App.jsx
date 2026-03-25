@@ -8,13 +8,15 @@ import Notices from './pages/Notices';
 import Events from './pages/Events';
 import CreateEvent from './pages/CreateEvent';
 import Notifications from './pages/Notifications';
-import Profile from './pages/Profile';
+import SeedDatabase from './pages/SeedDatabase';
 
 // Admin layout and pages
 import AdminLayout from './components/layout/AdminLayout';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminNotices from './pages/AdminNotices';
+import AdminEvents from './pages/AdminEvents';
+import AdminSeed from './pages/AdminSeed';
 import CreateNotice from './pages/CreateNotice';
 
 export default function App() {
@@ -30,7 +32,7 @@ export default function App() {
         <Route path="/events" element={<Events />} />
         <Route path="/events/create" element={<CreateEvent />} />
         <Route path="/notifications" element={<Notifications />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/seed" element={<SeedDatabase />} />
 
         <Route path="*" element={
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', fontFamily: 'var(--font-display)', gap: 8 }}>
@@ -42,11 +44,11 @@ export default function App() {
 
       {/* Admin Routes */}
       <Route path="/admin/login" element={<AdminLogin />} />
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route path="dashboard" element={<AdminDashboard />} />
-        <Route path="notices" element={<AdminNotices />} />
-        <Route path="notices/create" element={<CreateNotice />} />
-        <Route path="notices/edit/:id" element={<CreateNotice />} />
+      <Route element={<AdminLayout />}>
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/notices" element={<AdminNotices />} />
+        <Route path="/admin/notices/create" element={<CreateNotice />} />
+        <Route path="/admin/notices/edit/:id" element={<CreateNotice />} />
       </Route>
     </Routes>
   );

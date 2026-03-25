@@ -1,13 +1,41 @@
-import React, { useState } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../firebase';
+import { adminService } from '../../services/adminService';
 import AdminSidebar from '../AdminSidebar';
 import { Menu } from 'lucide-react';
 
-export default function AdminLayout() {
-  const isAdmin = localStorage.getItem('isAdmin');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const ALLOWED_ADMIN_EMAILS = ['crceadmin@gmail.com', 'admin@gmail.com'];
 
-  if (!isAdmin) {
+export default function AdminLayout() {
+  const [authState, setAuthState] = useState('loading'); // 'loading' | 'authed' | 'unauthed'
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user && ALLOWED_ADMIN_EMAILS.includes(user.email)) {
+        setAuthState('authed');
+      } else {
+        setAuthState('unauthed');
+      }
+    });
+    return unsubscribe;
+  }, []);
+
+  if (authState === 'loading') {
+    return (
+      <div style={{
+        minHeight: '100dvh', background: 'var(--bg-dark)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <p style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-ui)', fontSize: 14 }}>Verifying session…</p>
+      </div>
+    );
+  }
+
+  if (authState === 'unauthed') {
     return <Navigate to="/admin/login" replace />;
   }
 

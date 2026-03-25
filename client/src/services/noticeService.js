@@ -1,30 +1,11 @@
-const BASE_URL = '/api/notices';
+// client/src/services/noticeService.js
+// Thin wrapper — delegates everything to api.js (which now uses Firestore).
+import { api } from './api';
 
 export const noticeService = {
-  getNotices: async () => {
-    const res = await fetch(BASE_URL);
-    return res.json();
-  },
-  createNotice: async (data) => {
-    const res = await fetch(BASE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    return res.json();
-  },
-  updateNotice: async (id, data) => {
-    const res = await fetch(`${BASE_URL}/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    return res.json();
-  },
-  deleteNotice: async (id) => {
-    const res = await fetch(`${BASE_URL}/${id}`, {
-      method: 'DELETE',
-    });
-    return res.json();
-  }
+  getNotices: () => api.getNotices(),
+  getNotice: (id) => api.getNotice(id),
+  createNotice: (data) => api.createNotice(data),
+  updateNotice: (id, data) => api.updateNotice(id, data),
+  deleteNotice: (id) => api.deleteNotice(id),
 };
