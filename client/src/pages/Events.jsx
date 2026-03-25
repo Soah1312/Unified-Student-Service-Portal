@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { getEvents, registerEvent, deleteEvent } from '../services/eventService';
 import EventCard from '../components/EventCard';
+import { toggleAdminMode } from '../store/authSlice';
 
 export default function Events() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false); // Mock admin flag
-  const currentUserId = "student_001";
+  
+  // 1. Get user data from Redux Store
+  const dispatch = useDispatch();
+  const { user, isAdmin } = useSelector((state) => state.auth);
+  
+  // Use the ID from Redux instead of hardcoding
+  const currentUserId = user?.id;
 
   useEffect(() => {
     fetchEvents();
@@ -74,7 +81,7 @@ export default function Events() {
             <input 
               type="checkbox" 
               checked={isAdmin} 
-              onChange={() => setIsAdmin(!isAdmin)} 
+              onChange={() => dispatch(toggleAdminMode())} 
               className="rounded"
             />
             Admin Mode
