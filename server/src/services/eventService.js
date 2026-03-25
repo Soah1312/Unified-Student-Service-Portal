@@ -38,4 +38,13 @@ const deleteEvent = (id) => {
   return events.length !== initialLength;
 };
 
-export { getAllEvents, getEventById, createEvent, deleteEvent };
+const registerForEvent = (id, userId) => {
+  const event = getEventById(id);
+  if (!event) return { success: false, message: 'Event not found' };
+  if (!event.registrations) event.registrations = [];
+  if (event.registrations.includes(userId)) return { success: false, message: 'Already registered' };
+  event.registrations.push(userId);
+  return { success: true, message: 'Registered successfully', eventId: id };
+};
+
+export { getAllEvents, getEventById, createEvent, deleteEvent, registerForEvent };

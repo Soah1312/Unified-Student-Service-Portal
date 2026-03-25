@@ -4,8 +4,8 @@ import {
 } from 'firebase/auth';
 import { auth } from '../firebase';
 
-// Only this email is permitted to access the admin console.
-const ALLOWED_ADMIN_EMAIL = 'crceadmin@gmail.com';
+// Emails permitted to access the admin console.
+const ALLOWED_ADMIN_EMAILS = ['crceadmin@gmail.com', 'admin@gmail.com'];
 
 export const adminService = {
   /**
@@ -15,7 +15,7 @@ export const adminService = {
   login: async (email, password) => {
     try {
       const credential = await signInWithEmailAndPassword(auth, email, password);
-      if (credential.user.email !== ALLOWED_ADMIN_EMAIL) {
+      if (!ALLOWED_ADMIN_EMAILS.includes(credential.user.email)) {
         await signOut(auth);
         return { success: false, message: 'Access denied for this account.' };
       }

@@ -6,7 +6,7 @@ import { adminService } from '../../services/adminService';
 import AdminSidebar from '../AdminSidebar';
 import { Menu } from 'lucide-react';
 
-const ALLOWED_ADMIN_EMAIL = 'crceadmin@gmail.com';
+const ALLOWED_ADMIN_EMAILS = ['crceadmin@gmail.com', 'admin@gmail.com'];
 
 export default function AdminLayout() {
   const [authState, setAuthState] = useState('loading'); // 'loading' | 'authed' | 'unauthed'
@@ -15,7 +15,7 @@ export default function AdminLayout() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user && user.email === ALLOWED_ADMIN_EMAIL) {
+      if (user && ALLOWED_ADMIN_EMAILS.includes(user.email)) {
         setAuthState('authed');
       } else {
         setAuthState('unauthed');
