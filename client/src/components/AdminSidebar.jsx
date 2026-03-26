@@ -8,7 +8,7 @@ export default function AdminSidebar({ mobileOpen, onClose }) {
 
   const handleLogout = async () => {
     await adminService.logout();
-    navigate('/admin/login');
+    navigate('/admin');
   };
 
   const content = (

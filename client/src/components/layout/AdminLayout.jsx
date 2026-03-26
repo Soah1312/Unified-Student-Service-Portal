@@ -36,7 +36,7 @@ export default function AdminLayout() {
   }
 
   if (authState === 'unauthed') {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/admin" replace />;
   }
 
   return (

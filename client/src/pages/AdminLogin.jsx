@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase';
 import { adminService } from '../services/adminService';
 import Button from '../components/ui/Button';
 
@@ -8,7 +10,21 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const navigate = useNavigate();
+
+  const ALLOWED_ADMIN_EMAILS = ['crceadmin@gmail.com', 'admin@gmail.com'];
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user && ALLOWED_ADMIN_EMAILS.includes(user.email)) {
+        navigate('/admin/dashboard', { replace: true });
+      } else {
+        setCheckingAuth(false);
+      }
+    });
+    return unsubscribe;
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -22,6 +38,17 @@ export default function AdminLogin() {
     }
     setLoading(false);
   };
+
+  if (checkingAuth) {
+    return (
+      <div style={{
+        minHeight: '100dvh', background: 'var(--bg-dark)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <p style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-ui)', fontSize: 14 }}>Verifying…</p>
+      </div>
+    );
+  }
 
   return (
     <div style={{
