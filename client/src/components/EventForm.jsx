@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import Button from './ui/Button';
 
 const EventForm = ({ onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     date: '',
+    time: '',
     location: '',
     seats: ''
   });
@@ -22,49 +24,78 @@ const EventForm = ({ onSubmit, onCancel }) => {
     });
   };
 
+  const fieldStyle = { display: 'flex', flexDirection: 'column', gap: 6 };
+
   return (
-    <form onSubmit={handleSubmit} className="p-6 bg-white rounded-lg shadow-sm border space-y-4 max-w-xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Create New Event</h2>
-      
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      <div style={fieldStyle}>
+        <label className="editorial-label-field">Event Title</label>
         <input 
           type="text" 
           name="title" 
           required 
           value={formData.title} 
           onChange={handleChange}
-          className="w-full border p-2 rounded focus:ring-blue-500 focus:border-blue-500"
+          className="editorial-input"
+          placeholder="e.g. Annual Tech Symposium"
         />
       </div>
       
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+      <div style={fieldStyle}>
+        <label className="editorial-label-field">Description</label>
         <textarea 
           name="description" 
           required 
           rows="4"
           value={formData.description} 
           onChange={handleChange}
-          className="w-full border p-2 rounded focus:ring-blue-500 focus:border-blue-500"
+          className="editorial-input"
+          placeholder="Detailed description of the event..."
+          style={{ resize: 'vertical', fontFamily: 'var(--font-body)', lineHeight: 1.7 }}
         ></textarea>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+      <div className="form-row-2">
+        <div style={fieldStyle}>
+          <label className="editorial-label-field">Date</label>
           <input 
             type="date" 
             name="date" 
             required 
             value={formData.date} 
             onChange={handleChange}
-            className="w-full border p-2 rounded focus:ring-blue-500 focus:border-blue-500"
+            className="editorial-input"
           />
         </div>
         
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Total Seats</label>
+        <div style={fieldStyle}>
+          <label className="editorial-label-field">Time</label>
+          <input 
+            type="time" 
+            name="time" 
+            value={formData.time} 
+            onChange={handleChange}
+            className="editorial-input"
+          />
+        </div>
+      </div>
+
+      <div className="form-row-2">
+        <div style={fieldStyle}>
+          <label className="editorial-label-field">Location</label>
+          <input 
+            type="text" 
+            name="location" 
+            required 
+            value={formData.location} 
+            onChange={handleChange}
+            className="editorial-input"
+            placeholder="e.g. Main Auditorium"
+          />
+        </div>
+        
+        <div style={fieldStyle}>
+          <label className="editorial-label-field">Total Seats</label>
           <input 
             type="number" 
             name="seats" 
@@ -72,37 +103,28 @@ const EventForm = ({ onSubmit, onCancel }) => {
             min="1"
             value={formData.seats} 
             onChange={handleChange}
-            className="w-full border p-2 rounded focus:ring-blue-500 focus:border-blue-500"
+            className="editorial-input"
+            placeholder="e.g. 150"
           />
         </div>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-        <input 
-          type="text" 
-          name="location" 
-          required 
-          value={formData.location} 
-          onChange={handleChange}
-          className="w-full border p-2 rounded focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
+      <hr className="editorial-rule" />
 
-      <div className="flex justify-end space-x-3 pt-4">
-        <button 
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+        <Button 
           type="button" 
           onClick={onCancel}
-          className="px-4 py-2 border rounded font-medium text-gray-700 hover:bg-gray-50"
+          variant="ghost"
         >
           Cancel
-        </button>
-        <button 
+        </Button>
+        <Button 
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded font-medium hover:bg-blue-700"
+          variant="primary"
         >
-          Create Event
-        </button>
+          Publish Event
+        </Button>
       </div>
     </form>
   );

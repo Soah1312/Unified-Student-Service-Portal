@@ -1,11 +1,10 @@
 import React from 'react';
 
-const EventCard = ({ event, onRegister, onDelete, isAdmin }) => {
+const EventCard = ({ event, onRegister, onDelete, isAdmin, currentUserId = 'student_001' }) => {
   const seatsLeft = event.seats - (event.registeredUsers?.length || 0);
   const isFull = seatsLeft <= 0;
   
-  // Assume mock user is "student_001", check if they are already registered
-  const isRegistered = event.registeredUsers?.includes("student_001");
+  const isRegistered = event.registeredUsers?.includes(currentUserId);
 
   return (
     <div className="border rounded-lg shadow-sm p-4 bg-white flex flex-col">

@@ -42,15 +42,15 @@ export default function AdminDashboard() {
 
       {/* Stats row */}
       <div className="stat-row">
-        <div style={{ padding: '24px', textAlign: 'center', background: 'var(--bg-card)' }}>
-          <FileText size={22} style={{ margin: '0 auto 10px', color: 'var(--text-muted)' }} />
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: 44, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>{totalNotices}</div>
+        <div style={{ padding: '32px 24px', textAlign: 'center', background: 'var(--bg-card)' }}>
+          <FileText size={24} style={{ margin: '0 auto 12px', color: 'var(--text-muted)' }} />
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 48, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>{totalNotices}</div>
           <div className="editorial-label" style={{ marginTop: 8 }}>Total Notices</div>
         </div>
         {Object.entries(categoryCounts).slice(0, 2).map(([cat, count], i) => (
-          <div key={cat} style={{ padding: '24px', textAlign: 'center', background: 'var(--bg-card)' }}>
-            <Grid size={22} style={{ margin: '0 auto 10px', color: i === 0 ? '#2E7D32' : '#B45309' }} />
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: 44, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>{count}</div>
+          <div key={cat} style={{ padding: '32px 24px', textAlign: 'center', background: 'var(--bg-card)' }}>
+            <Grid size={24} style={{ margin: '0 auto 12px', color: i === 0 ? '#2E7D32' : '#B45309' }} />
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: 48, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1 }}>{count}</div>
             <div className="editorial-label" style={{ marginTop: 8 }}>{cat}</div>
           </div>
         ))}

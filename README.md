@@ -1,6 +1,6 @@
 # 🎓 Unified Student Service Portal (USSP)
 
-A modern, high-performance, and modular platform built to centralize student services. Featuring a premium glassmorphic UI and an edge-native backend.
+A modern, high-performance, and modular platform built to centralize student services. The app now runs as a frontend-only Firebase application.
 
 ## 🚀 Key Features
 
@@ -18,12 +18,11 @@ A modern, high-performance, and modular platform built to centralize student ser
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Routing**: [React Router v6](https://reactrouter.com/)
+- **State**: [Redux Toolkit](https://redux-toolkit.js.org/)
 
-### Backend
-- **Framework**: [Hono.js](https://hono.dev/)
-- **Runtime**: [Cloudflare Workers](https://workers.cloudflare.com/) (Edge Runtime)
-- **Deployment**: [Wrangler](https://developers.cloudflare.com/workers/wrangler/)
-- **CI/CD**: [GitHub Actions](https://github.com/features/actions)
+### Backend-as-a-Service
+- **Database**: [Firebase Firestore](https://firebase.google.com/docs/firestore)
+- **Authentication**: [Firebase Auth](https://firebase.google.com/docs/auth)
 
 ---
 
@@ -32,6 +31,7 @@ A modern, high-performance, and modular platform built to centralize student ser
 ### Prerequisites
 - Node.js (v20.x recommended)
 - npm or yarn
+- A Firebase project with Firestore and Authentication enabled
 
 ### Installation
 
@@ -41,36 +41,26 @@ A modern, high-performance, and modular platform built to centralize student ser
    cd Unified-Student-Service-Portal
    ```
 
-2. **Setup Backend**:
+2. **Setup Frontend**:
    ```bash
-   cd server
+   cd client
    npm install
    npm run dev
    ```
 
-3. **Setup Frontend**:
-   ```bash
-   cd ../client
-   npm install
-   npm run dev
+3. **Configure Environment Variables**:
+   Create `client/.env` and set:
+   ```env
+   VITE_FIREBASE_API_KEY=...
+   VITE_FIREBASE_AUTH_DOMAIN=...
+   VITE_FIREBASE_PROJECT_ID=...
+   VITE_FIREBASE_STORAGE_BUCKET=...
+   VITE_FIREBASE_MESSAGING_SENDER_ID=...
+   VITE_FIREBASE_APP_ID=...
    ```
 
 4. **Access the App**:
    - Frontend: `http://localhost:5173`
-   - Local API: `http://localhost:8787`
-
----
-
-## 🚀 Deployment
-
-### Backend (Cloudflare Workers)
-The backend is automatically deployed to Cloudflare via GitHub Actions on every push to the `main` branch.
-
-**Manual Deployment**:
-```bash
-cd server
-npm run deploy
-```
 
 ---
 
@@ -81,23 +71,18 @@ npm run deploy
 │   ├── src/
 │   │   ├── components/    # Reusable UI & Layout components
 │   │   ├── pages/         # Application pages
-│   │   ├── services/      # API communication layer
+│   │   ├── services/      # Firebase data/service layer
 │   │   └── index.css      # Core styles & Tailwind v4
-├── server/                # Hono.js Cloudflare Worker
-│   ├── src/
-│   │   ├── routes/        # Modular Hono API routes
-│   │   └── services/      # Business logic & mock data services
-│   └── wrangler.toml      # Cloudflare configuration
-└── .github/workflows/     # CI/CD Deployment pipeline
+└── .github/workflows/     # CI/CD workflows (optional)
 ```
 
 ---
 
 ## 📝 Roadmap & Future Scope
-- [ ] **Database Integration**: Migrate in-memory state to [Cloudflare D1](https://developers.cloudflare.com/d1/).
-- [ ] **Real-time Engine**: Implement real-time notifications with WebSockets/Durable Objects.
-- [ ] **Authentication**: Secure endpoints with JSON Web Tokens (JWT).
-- [ ] **File Storage**: Use [Cloudflare R2](https://developers.cloudflare.com/r2/) for resource uploads.
+- [ ] **Role Management**: Add fine-grained RBAC for admin/editor/student roles.
+- [ ] **Real-time Updates**: Use Firestore listeners for live notice/event updates.
+- [ ] **Security Rules**: Harden Firestore and Auth rules for production.
+- [ ] **File Storage**: Add media uploads using [Firebase Storage](https://firebase.google.com/docs/storage).
 
 ---
 

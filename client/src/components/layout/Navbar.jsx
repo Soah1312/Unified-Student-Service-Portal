@@ -19,6 +19,7 @@ export default function Navbar({ onMenuToggle }) {
     return () => window.removeEventListener('storage', checkNotifications);
   }, []);
 
+
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 
   return (
