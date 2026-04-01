@@ -1,10 +1,14 @@
 import React from 'react';
-import { Bell, User, Menu } from 'lucide-react';
+import { Bell, Sun, Moon, Menu } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { userService } from '../../services/userService';
+import { useTheme } from '../../context/ThemeContext';
 
-export default function Navbar({ onMenuToggle }) {
+export default function Navbar({ onMenuToggle, onThemeChanged }) {
   const [unreadCount, setUnreadCount] = React.useState(0);
+  const { theme, isDark, toggleTheme } = useTheme();
+  const reduxTheme = useSelector((state) => state.ui.theme);
   
   React.useEffect(() => {
     const checkNotifications = async () => {
@@ -18,6 +22,11 @@ export default function Navbar({ onMenuToggle }) {
     window.addEventListener('storage', checkNotifications);
     return () => window.removeEventListener('storage', checkNotifications);
   }, []);
+
+  const handleThemeToggle = () => {
+    const nextTheme = toggleTheme();
+    if (onThemeChanged) onThemeChanged(nextTheme);
+  };
 
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
@@ -71,6 +80,21 @@ export default function Navbar({ onMenuToggle }) {
 
         {/* Right actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <button
+            type="button"
+            onClick={handleThemeToggle}
+            title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+            style={{
+              position: 'relative',
+              padding: '8px',
+              color: 'rgba(245,245,240,0.75)',
+              display: 'flex',
+              alignItems: 'center',
+              border: '1px solid rgba(245,245,240,0.15)',
+            }}
+          >
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
           <Link
             to="/notifications"
             style={{ position: 'relative', padding: '8px', color: 'rgba(245,245,240,0.6)', display: 'flex', alignItems: 'center', transition: 'color 0.2s' }}
@@ -90,6 +114,9 @@ export default function Navbar({ onMenuToggle }) {
               </span>
             )}
           </Link>
+          <span className="editorial-label" style={{ color: 'rgba(245,245,240,0.35)' }}>
+            {reduxTheme}
+          </span>
         </div>
       </div>
     </header>

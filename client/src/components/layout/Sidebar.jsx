@@ -1,12 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Megaphone, Calendar, Bell, User } from 'lucide-react';
+import { LayoutDashboard, Megaphone, Calendar, Bell, Palette } from 'lucide-react';
 
 const navItems = [
   { path: '/dashboard',      label: 'Dashboard',     icon: <LayoutDashboard size={18} />, section: 'I.' },
   { path: '/notices',       label: 'Notices',       icon: <Megaphone size={18} />,       section: 'II.' },
   { path: '/events',        label: 'Events',        icon: <Calendar size={18} />,        section: 'III.' },
   { path: '/notifications', label: 'Notifications', icon: <Bell size={18} />,            section: 'IV.' },
+  { path: '/settings/theme', label: 'Theme', icon: <Palette size={18} />, section: 'V.' },
 ];
 
 import { X } from 'lucide-react';

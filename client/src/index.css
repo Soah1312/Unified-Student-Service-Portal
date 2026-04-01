@@ -45,6 +45,30 @@
   --transition: all 0.2s ease;
 }
 
+[data-theme='dark'] {
+  --bg:           #111111;
+  --bg-secondary: #1b1b1b;
+  --bg-dark:      #050505;
+  --bg-dark-soft: #121212;
+  --bg-card:      #1a1a1a;
+
+  --text-primary:   #f1f1ec;
+  --text-secondary: #c8c8c0;
+  --text-muted:     #9d9d95;
+  --text-invert:    #f5f5f0;
+  --text-invert-muted: rgba(245,245,240,0.6);
+
+  --border:        #3a3a36;
+  --border-dark:   #f5f5f0;
+  --border-accent: #ff5757;
+}
+
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: none !important;
+}
+
 /* ===================================================
    RESET
    =================================================== */
@@ -65,6 +89,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 a {

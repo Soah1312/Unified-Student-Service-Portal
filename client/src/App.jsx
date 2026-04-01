@@ -9,6 +9,7 @@ import Events from './pages/Events';
 import CreateEvent from './pages/CreateEvent';
 import Notifications from './pages/Notifications';
 import SeedDatabase from './pages/SeedDatabase';
+import ThemeSettings from './pages/ThemeSettings';
 
 // Admin layout and pages
 import AdminLayout from './components/layout/AdminLayout';
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/events" element={<Events />} />
         <Route path="/events/create" element={<CreateEvent />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/settings/theme" element={<ThemeSettings />} />
         <Route path="/seed" element={<SeedDatabase />} />
 
         <Route path="*" element={
